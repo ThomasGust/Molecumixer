@@ -7,6 +7,7 @@ from torch_geometric.nn import global_mean_pool as gap, global_max_pool as gmp
 import sys
 sys.path.append('C:\\Users\\Thomas\\OneDrive\\Apps\\Documents\\Visual studio code projects\\Chemix\\molecular_analysis')
 from utils import torchload
+from tqdm import tqdm
 torch.manual_seed(31415)
 """
 THE FIRST ENCODER I WILL IMPLEMENT HERE IS JUST A GENERIC CONVOLUTIONAL GRAPH TRANSFORMER FROM A
@@ -120,7 +121,6 @@ if __name__ == "__main__":
                   dense_neurons=BEST_PARAMETERS['model_dense_neurons'][0],
                   edge_dim=3)
     print(model)
-    from tqdm import tqdm
     for i, batch in enumerate(tqdm(dataloader)):
         pred = model(batch.x.float(),
                      batch.edge_attr.float(),

@@ -12,6 +12,8 @@ from utils import torchload, torchdump
 from models import CGTNN
 from config import MAX_EDGES
 from torch import optim
+from tqdm import tqdm
+import os
 
 ATOMIC_NUMBERS =  list(range(0, 119))
 SUPPORTED_ATOMS = [ELEMENT_BASE[i][0] for i in ATOMIC_NUMBERS]
@@ -308,9 +310,6 @@ if __name__ == "__main__":
                 max_molecule_size=MAX_MOLECULE_SIZE,
                 decoder_neurons=512)
     #gvae.to(device)
-
-    from tqdm import tqdm
-    import os
     optimizer = optim.Adam(gvae.parameters(), lr=1e-4)
 
     for epoch in range(300):
@@ -342,3 +341,4 @@ if __name__ == "__main__":
         if os.path.exists(p):
             os.mkdir(p)
         torchdump(os.path.join(p, "argvaet.sd"), gvae)
+ 
