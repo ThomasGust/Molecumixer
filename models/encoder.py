@@ -18,6 +18,7 @@ ENCODER ARCHITECTURES, BUT THIS MODEL SHOULD WORK FINE FOR NOW
 THIS IS SO EDITED IT DOESNT REALLY REPRESENT DEEPFINDR ANYMORE, BUT STILL THANKS TO HIM FOR THE BASIC ARCHITECTURE"""
 
 print("This is a test to see if my commit history is updating properly, if you see this, it is.")
+print("NVM, it looks like commits have caching time so this should appear by the morning")
 
 
 class CGTNN(torch.nn.Module):
