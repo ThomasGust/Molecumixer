@@ -104,7 +104,7 @@ if __name__ == "__main__":
         "batch_size": [128],
         "learning_rate": [0.01],
         "weight_decay": [0.0001],
-        "sgd_momentum": [0.8],
+        "sgd_momentum": [0.75],
         "scheduler_gamma": [0.8],
         "pos_weight": [1.3],
         "model_embedding_size": [512],
