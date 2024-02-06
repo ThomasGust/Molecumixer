@@ -104,5 +104,3 @@ def pad_graph_batch(g, v, bbs):
 
 def compute_mask(t, v):
     return t != v
-
-#padded = pad_graph(rand_hiv2, v=-10)
