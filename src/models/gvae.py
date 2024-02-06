@@ -4,7 +4,7 @@ from torch.nn import Linear
 import torch.nn.functional as F
 import numpy as np
 import sys
-sys.path.append('C:\\Users\\Thomas\\OneDrive\\Apps\\Documents\\Visual studio code projects\\Chemix\\molecular_analysis')
+sys.path.append('C:\\Users\\Thomas\\OneDrive\\Apps\\Documents\\GitHub\\Molecumixer')
 from config import (NUM_AROMATIC, NUM_ATOMS, NUM_BOND_TYPES, NUM_CHIRALITIES, NUM_CONJUGATED, NUM_DEGREES, NUM_FORMAL_CHARGES,
                     NUM_HS, NUM_INRING, NUM_RADICAL_ELECTRONS, NUM_HYBRIDIZATION, NUM_STEREO, MAX_MOLECULE_SIZE, E_MAP, ELEMENT_BASE)
 from paddings import pad_graph_batch, compute_mask
@@ -272,7 +272,7 @@ def total_loss_fn(rl_loss, adj_loss, kl_loss, rl_lambda=1.0, adj_lambda=1.0, kl_
 if __name__ == "__main__":
     sample_data = torch.ones((32, 1024))
     device = torch.device("cpu")
-    dataloader = torchload("molecular_analysis\\data_dir\\loaders\\sample_loader.moldata")
+    dataloader = torchload("data\\loaders\\sample_loader.moldata")
 
     BEST_PARAMETERS = {
     "batch_size": [128],
@@ -337,7 +337,7 @@ if __name__ == "__main__":
                 optimizer.step()
                 pbar.set_description(f"{total_loss.item()}, {adj_loss.item()*10}")
 
-        p = f"molecular_analysis\\checkpoints\\argvaet\\EPOCH_{epoch}"
+        p = f"checkpoints\\argvaet\\EPOCH_{epoch}"
         if os.path.exists(p):
             os.mkdir(p)
         torchdump(os.path.join(p, "argvaet.sd"), gvae)

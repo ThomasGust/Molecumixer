@@ -219,11 +219,11 @@ if __name__ == "__main__":
         graph = from_smiles(molecule, with_hydrogen=True, kekulize=False)
         graphs.append((graph, molecule))
 
-    with open("molecular_analysis\\data\\graphs\\sample_graphs.mol", "wb") as f:
+    with open("data\\graphs\\sample_graphs.mol", "wb") as f:
         pkl.dump(graphs, f)
     """
     
-    with open("molecular_analysis\\data\\graphs\\sample_graphs.mol", "rb") as f:
+    with open("data\\graphs\\sample_graphs.mol", "rb") as f:
         data = pkl.load(f)
     print(data[0])
     

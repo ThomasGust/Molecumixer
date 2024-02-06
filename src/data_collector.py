@@ -11,7 +11,7 @@ import pickle as pkl
 import time
 
 def generate():
-    compounds = pd.read_csv("molecular_analysis\\data\\raw\\chembl_compounds.csv", on_bad_lines='warn', sep=";")
+    compounds = pd.read_csv("data\\raw\\chembl_compounds.csv", on_bad_lines='warn', sep=";")
     print(len(compounds))
 
     culled_compounds = compounds[["ChEMBL ID","Smiles"]]
@@ -21,7 +21,7 @@ def generate():
         try:
             mol = Chem.MolFromSmiles(smiles)
             img = _legacyMolToImage(mol, size=(224, 224), wedgeBonds=True, fitImage=True, options=None, canvas=None,kekulize=False)
-            img.save(f"molecular_analysis\\data\\images\\CHEMBL_COMPOUND{i}.png")
+            img.save(f"data\\images\\CHEMBL_COMPOUND{i}.png")
             if i % 1000 == 0:
                 print(f"{i}/{len(culled_compounds)}:{i/len(culled_compounds)*100}%")
         except Exception as e:
@@ -29,7 +29,7 @@ def generate():
             print(smiles)
 
 def new_generate():
-    compounds = pd.read_csv("molecular_analysis\\data\\raw\\chembl_compounds.csv", on_bad_lines='warn', sep=';')
+    compounds = pd.read_csv("data\\raw\\chembl_compounds.csv", on_bad_lines='warn', sep=';')
     print(compounds.head())
     culled = compounds[['ChEMBL ID', "Smiles"]].dropna()
     print(len(culled))
@@ -49,7 +49,7 @@ def new_generate():
             v = i*split_size+ii+ns*split_size
             mol = Chem.MolFromSmiles(molecule, sanitize=False)
             img = _legacyMolToImage(mol, size=(224, 224), wedgeBonds=True, fitImage=True, options=None, canvas=None,kekulize=False)
-            img.save(f"molecular_analysis\\data\\images\\CHEMBL_COMPOUND{v}.png")
+            img.save(f"data\\images\\CHEMBL_COMPOUND{v}.png")
         print(f"{v/lc*100}%")
         time.sleep(0.1)
 
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     #mol = Chem.MolFromSmiles("CO")
     #img.save("test.png")
     #print("FINISHED NOW")
-    compounds = pd.read_csv("molecular_analysis\\data\\raw\\chembl_compounds.csv", on_bad_lines='warn', sep=';')
+    compounds = pd.read_csv("data\\raw\\chembl_compounds.csv", on_bad_lines='warn', sep=';')
     culled = compounds[['ChEMBL ID', 'Smiles']].dropna()
 
     x = []

@@ -5,20 +5,10 @@ from torch.nn import Linear, BatchNorm1d, ModuleList, Embedding
 from torch_geometric.nn import TransformerConv, TopKPooling
 from torch_geometric.nn import global_mean_pool as gap, global_max_pool as gmp
 import sys
-sys.path.append('C:\\Users\\Thomas\\OneDrive\\Apps\\Documents\\Visual studio code projects\\Chemix\\molecular_analysis')
+sys.path.append('C:\\Users\\Thomas\\OneDrive\\Apps\\Documents\\GitHub\\Molecumixer')
 from utils import torchload
 from tqdm import tqdm
 torch.manual_seed(31415)
-"""
-THE FIRST ENCODER I WILL IMPLEMENT HERE IS JUST A GENERIC CONVOLUTIONAL GRAPH TRANSFORMER FROM A
-DEEPFINDR SERIES, AFTER I AM DONE IMPLEMENTING THE REST OF THIS PROJECT, I CAN EXPLORE MORE ADVANCED
-ENCODER ARCHITECTURES, BUT THIS MODEL SHOULD WORK FINE FOR NOW
-"""
-"""
-THIS IS SO EDITED IT DOESNT REALLY REPRESENT DEEPFINDR ANYMORE, BUT STILL THANKS TO HIM FOR THE BASIC ARCHITECTURE"""
-
-print("This is a test to see if my commit history is updating properly, if you see this, it is.")
-print("NVM, it looks like commits have caching time so this should appear by the morning")
 
 
 class CGTNN(torch.nn.Module):
@@ -98,7 +88,7 @@ class LinearProjection(torch.nn.Module):
     def forward(self, x):
         return self.proj(x)
 if __name__ == "__main__":
-    dataloader = torchload("molecular_analysis\\data\\loaders\\sample_loader.moldata")
+    dataloader = torchload("data\\loaders\\sample_loader.moldata")
 
     BEST_PARAMETERS = {
         "batch_size": [128],

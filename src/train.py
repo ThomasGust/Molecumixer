@@ -1,5 +1,5 @@
 import sys
-sys.path.append('C:\\Users\\Thomas\\OneDrive\\Apps\\Documents\\Visual studio code projects\\Chemix\\molecular_analysis')
+sys.path.append('C:\\Users\\Thomas\\OneDrive\\Apps\\Documents\\GitHub\\Molecumixer')
 from utils import (torchload, dump, load, torchdump)
 from utils import SUPPORTED_EDGES, SUPPORTED_ATOMS, MAX_MOLECULE_SIZE
 from models import CGTNN, LinearProjection, GVAE
@@ -20,7 +20,7 @@ BATCH_SIZE = 32
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 cpu = torch.device("cpu")
 #device = torch.device("cpu")
-dataloader = torchload("molecular_analysis\\data_dir\\loaders\\sample_loader.moldata").to(device)
+dataloader = torchload("data\\loaders\\sample_loader.moldata").to(device)
 
 def avg(l):
     return sum(l)/len(l)
@@ -244,4 +244,4 @@ def train_one_epoch(epoch, model, train_loader, sp=None, stats_sp=None):
 
 
 for epoch in range(300):
-    train_one_epoch(epoch, model, dataloader, sp=f"molecular_analysis\\checkpoints\\cgtnn\\EPOCH{epoch}", stats_sp=f"molecular_analysis\\checkpoints\\cgtnn\\EPOCH{epoch}")
+    train_one_epoch(epoch, model, dataloader, sp=f"checkpoints\\cgtnn\\EPOCH{epoch}", stats_sp=f"checkpoints\\cgtnn\\EPOCH{epoch}")
