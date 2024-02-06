@@ -29,6 +29,8 @@ def compute_hamming_distance(v):
     print(list(zip(base, v)))
     return sum([0 if v1 == v2 else 1 for v1, v2 in list(zip(base, v))])
 
+def permute_hamming_vector():
+    pass
 
 def permuted_nodes(graph, chunks, maximum_hamming_distance):
     permutation_vector = list(range(chunks**2))
@@ -252,7 +254,7 @@ def compute_sample():
     but this function is definetly on the #TODO
     
     """
-    data = load("data\\graphs\\sample_graphs.mol")
+    data = load("molecular_analysis\\data_dir\\graphs\\sample_graphs.mol")
     d = []
     cntr = 0
 
@@ -285,7 +287,7 @@ def compute_sample():
     _graph_descriptors = row_normalize_array(np.array(_graph_descriptors))
 
     d = (_descriptors, _descriptors3d, _graph_descriptors, _fingerprints, _smiles, _graphs, _cntr)
-    dump("data\\processed_graphs\\sample_graphs_5k.pmol",d)
+    dump("molecular_analysis\\data_dir\\processed_graphs\\sample_graphs_5k.pmol",d)
 
 def fetch_dataloader(pmol_path, bs=32, shuffle=True, sp=None, fpdtype=np.uint8):
     """
@@ -337,9 +339,9 @@ def fetch_dataloader(pmol_path, bs=32, shuffle=True, sp=None, fpdtype=np.uint8):
 if __name__ == "__main__":
     #compute_sample()
     
-    #sp = "data\\loaders\\sample_loader.moldata"
+    #sp = "molecular_analysis\\data_dir\\loaders\\sample_loader.moldata"
     
-    #sg_path = "data\\processed_graphs\\sample_graphs.pmol"
+    #sg_path = "molecular_analysis\\data_dir\\processed_graphs\\sample_graphs.pmol"
     #data_loader = fetch_dataloader(sg_path, sp=sp)
     
     
