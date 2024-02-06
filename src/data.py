@@ -9,7 +9,7 @@ from typing import Any
 from rdkit import Chem, RDLogger
 from rdkit.Chem import Descriptors, AllChem, MACCSkeys, rdMolDescriptors, RDKFingerprint, Descriptors3D, GraphDescriptors, DataStructs
 from rdkit.Avalon import pyAvalonTools as avalon
-from utils import load, dump, torchload, torchdump
+from utils import load, dump, torchload, torchdump, timeout
 import torch
 
 from torch_geometric.loader import DataLoader
@@ -17,9 +17,29 @@ from torch_geometric.data import Data
 import torch_geometric
 from config import X_MAP as x_map
 from config import E_MAP as e_map
+from stopit import threading_timeoutable as timeoutable
+import numpy as np
+
+def compute_hamming_distance(v):
+    """This function computes the hamming distance between a permutation vector and the base permutation
+        It counts the spots that don't equal one another
+    """
+    c = len(v)
+    base = [i for i in range(c)]
+    print(list(zip(base, v)))
+    return sum([0 if v1 == v2 else 1 for v1, v2 in list(zip(base, v))])
 
 
+def permuted_nodes(graph, chunks, maximum_hamming_distance):
+    permutation_vector = list(range(chunks**2))
 
+def permuted_edges(graph, chunks, maximum_hamming_distance):
+    permuted, label = None, None
+    return permuted, label
+
+def permuted_graph(graph, chunks, maximum_hamming_distance):
+    permuted, label = None, None
+    return permuted, label
 
 def from_smiles(smiles: str, with_hydrogen: bool = False,
                 kekulize: bool = False) -> 'torch_geometric.data.Data':
@@ -212,6 +232,7 @@ def row_normalize_array(a):
     a /= avgs
     return a
 
+@timeoutable()
 def calculate(smiles):
     mol = Chem.MolFromSmiles(smiles)
     mol = Chem.AddHs(mol)
@@ -231,7 +252,7 @@ def compute_sample():
     but this function is definetly on the #TODO
     
     """
-    data = load("data\\graphs\\sample_graphs.mol")
+    data = load("molecular_analysis\\data_dir\\graphs\\sample_graphs.mol")
     d = []
     cntr = 0
 
@@ -243,9 +264,9 @@ def compute_sample():
     _graphs = []
     _cntr = []
 
-    for graph, smiles in tqdm(data[:10_000]):
+    for graph, smiles in tqdm(data[:5000]):
         try:
-            descriptors, descriptors3d, graph_descriptors, fingerprints = calculate(smiles)
+            descriptors, descriptors3d, graph_descriptors, fingerprints = calculate(smiles, timeout=5)
             _descriptors.append(descriptors)
             _descriptors3d.append(descriptors3d)
             _graph_descriptors.append(graph_descriptors)
@@ -264,7 +285,7 @@ def compute_sample():
     _graph_descriptors = row_normalize_array(np.array(_graph_descriptors))
 
     d = (_descriptors, _descriptors3d, _graph_descriptors, _fingerprints, _smiles, _graphs, _cntr)
-    dump("data\\processed_graphs\\sample_graphs.pmol",d)
+    dump("molecular_analysis\\data_dir\\processed_graphs\\sample_graphs_5k.pmol",d)
 
 def fetch_dataloader(pmol_path, bs=32, shuffle=True, sp=None, fpdtype=np.uint8):
     """
@@ -314,12 +335,14 @@ def fetch_dataloader(pmol_path, bs=32, shuffle=True, sp=None, fpdtype=np.uint8):
     return dataloader
 
 if __name__ == "__main__":
-    compute_sample()
+    #compute_sample()
     
-    sp = "data\\loaders\\sample_loader.moldata"
+    #sp = "molecular_analysis\\data_dir\\loaders\\sample_loader.moldata"
     
-    sg_path = "data\\processed_graphs\\sample_graphs.pmol"
-    data_loader = fetch_dataloader(sg_path, sp=sp)
+    #sg_path = "molecular_analysis\\data_dir\\processed_graphs\\sample_graphs.pmol"
+    #data_loader = fetch_dataloader(sg_path, sp=sp)
     
     
-    torchload(sp)
+    #torchload(sp)
+    hamming_distance = compute_hamming_distance([0, 1, 2, 3, 4, 5])
+    print(hamming_distance)
