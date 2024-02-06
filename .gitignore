@@ -148,6 +148,7 @@ cython_debug/
 
 data_dir/
 data/
+checkpoints/
 # PyCharm
 #  JetBrains specific template is maintainted in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
