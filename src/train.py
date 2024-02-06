@@ -1,5 +1,5 @@
 import sys
-sys.path.append('C:\\Users\\Thomas\\OneDrive\\Apps\\Documents\\GitHub\\Molecumixer')
+sys.path.append('C:\\Users\\Thomas\\OneDrive\\Apps\\Documents\\Visual studio code projects\\Chemix\\molecular_analysis')
 from utils import (torchload, dump, load, torchdump)
 from utils import SUPPORTED_EDGES, SUPPORTED_ATOMS, MAX_MOLECULE_SIZE
 from models import CGTNN, LinearProjection, GVAE
@@ -14,13 +14,18 @@ import torch.optim as optim
 import torch
 import torch.nn as nn
 from tqdm import tqdm
-from torch.optim.lr_scheduler import ReduceLROnPlateau
+from torch.optim.lr_scheduler import ReduceLROnPlateau, StepLR
+from torch.utils.data import DataLoader
+from plotter import load_stats
+
+print("FINISHED IMPORTS")
 
 BATCH_SIZE = 32
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 cpu = torch.device("cpu")
 #device = torch.device("cpu")
-dataloader = torchload("data\\loaders\\sample_loader.moldata").to(device)
+dataloader = torchload("molecular_analysis\\data_dir\\loaders\\sample_loader.moldata")
+print("LOADED DATALOADER")
 
 def avg(l):
     return sum(l)/len(l)
@@ -94,10 +99,10 @@ params = concat_generators(model.parameters(),descriptor_proj.parameters(),descr
                              ,graph_descriptors_proj.parameters(),mfp2_proj.parameters(),mfp3_proj.parameters(),
                              maccs_proj.parameters(),rdkfp_proj.parameters(),avfp_proj.parameters())
 
-total_optimizer = optim.Adam(params,lr=1e-3)
+total_optimizer = optim.Adam(params, lr=1e-3)
 
 p = 3
-scheduler = ReduceLROnPlateau(encoder_optimizer, 'min',patience=p)
+scheduler = ReduceLROnPlateau(encoder_optimizer, 'min',patience=p, )
 
 def count_params(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
@@ -147,7 +152,7 @@ def train_one_epoch(epoch, model, train_loader, sp=None, stats_sp=None):
 
         descriptor_loss = torch.sqrt(F.mse_loss(descriptor_pred.float(), descriptors.float()))
         descriptors3d_loss = torch.sqrt(F.mse_loss(descriptor3d_pred.float(), descriptors3d.float()))
-        graph_descriptor_loss = torch.sqrt(F.mse_loss((graph_descriptor_pred.float(), graph_descriptors.float())))
+        graph_descriptor_loss = torch.sqrt(F.mse_loss(graph_descriptor_pred.float(), graph_descriptors.float()))
 
         mfp2_loss = F.binary_cross_entropy_with_logits(mfp2_pred.float(), mfp2.float())
         mfp3_loss = F.binary_cross_entropy_with_logits(mfp3_pred.float(), mfp3.float())
@@ -206,6 +211,8 @@ def train_one_epoch(epoch, model, train_loader, sp=None, stats_sp=None):
         torch.save(rdkfp_proj.state_dict(), os.path.join(sp, "rdkfpproj.sd"))
         torch.save(avfp_proj.state_dict(), os.path.join(sp, "avfpproj.sd"))
     
+    current_lr = encoder_optimizer.param_groups[0]['lr']
+
     if stats_sp is not None:
         if not os.path.exists(stats_sp):
             os.mkdir(stats_sp)
@@ -221,11 +228,12 @@ def train_one_epoch(epoch, model, train_loader, sp=None, stats_sp=None):
             'rdkfp loss': epoch_rdkfp_loss,
             'avfp loss': epoch_avfp_loss,
             'fingerprint loss': epoch_fp_loss,
-            'total loss': epoch_loss
+            'total loss': epoch_loss,
+            'lr': current_lr
         })
 
     print(f"EPOCH: {epoch}")
-    print(f"LEARNING RATE: {encoder_optimizer.param_groups[0]['lr']}")
+    print(f"LEARNING RATE: {current_lr}")
     print()
     print(f"DESCRIPTOR LOSS: {epoch_descriptor_loss}")
     print(f"3D DESCRIPTOR LOSS: {epoch_descriptor3d_loss}")
@@ -241,7 +249,8 @@ def train_one_epoch(epoch, model, train_loader, sp=None, stats_sp=None):
     print()
     print(f"TOTAL LOSS: {epoch_loss}")
 
-
-
-for epoch in range(300):
-    train_one_epoch(epoch, model, dataloader, sp=f"checkpoints\\cgtnn\\EPOCH{epoch}", stats_sp=f"checkpoints\\cgtnn\\EPOCH{epoch}")
+if __name__ == "__main__":
+    for epoch in range(50):
+        train_one_epoch(epoch, model, dataloader, sp=f"molecular_analysis\\checkpoints\\cgtnn\\EPOCH{epoch}", stats_sp=f"molecular_analysis\\checkpoints\\cgtnn\\EPOCH{epoch}")
+    data = load_stats("molecular_analysis\\checkpoints\\cgtnn")
+    dump("molecular_analysis\\checkpoints\\cgtnn\\cgtnn.stats")
