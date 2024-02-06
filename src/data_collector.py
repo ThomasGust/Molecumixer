@@ -128,13 +128,4 @@ if __name__ == "__main__":
     with open("models.pkl", "wb") as f:
         #pkl.dump([k_100, k_500, k_1000, k_5000, k_10000],f)
         pkl.dump([k_100, k_500, k_1000, k_5000, k_10000],f)
-
-
-    """
-    smiles = list(culled['Smiles'])[500]
-    print(smiles)
-    smiles = Chem.MolFromSmiles(smiles)
-    maccs = np.frombuffer(MACCSkeys.GenMACCSKeys(smiles).ToBitString().encode(), 'u1') - ord('0')
-    print(kmeans.predict(maccs.reshape(1, -1)))
-    """
     print("DONE")
