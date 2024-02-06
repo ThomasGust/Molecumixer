@@ -252,7 +252,7 @@ def compute_sample():
     but this function is definetly on the #TODO
     
     """
-    data = load("molecular_analysis\\data_dir\\graphs\\sample_graphs.mol")
+    data = load("data\\graphs\\sample_graphs.mol")
     d = []
     cntr = 0
 
@@ -285,7 +285,7 @@ def compute_sample():
     _graph_descriptors = row_normalize_array(np.array(_graph_descriptors))
 
     d = (_descriptors, _descriptors3d, _graph_descriptors, _fingerprints, _smiles, _graphs, _cntr)
-    dump("molecular_analysis\\data_dir\\processed_graphs\\sample_graphs_5k.pmol",d)
+    dump("data\\processed_graphs\\sample_graphs_5k.pmol",d)
 
 def fetch_dataloader(pmol_path, bs=32, shuffle=True, sp=None, fpdtype=np.uint8):
     """
@@ -337,9 +337,9 @@ def fetch_dataloader(pmol_path, bs=32, shuffle=True, sp=None, fpdtype=np.uint8):
 if __name__ == "__main__":
     #compute_sample()
     
-    #sp = "molecular_analysis\\data_dir\\loaders\\sample_loader.moldata"
+    #sp = "data\\loaders\\sample_loader.moldata"
     
-    #sg_path = "molecular_analysis\\data_dir\\processed_graphs\\sample_graphs.pmol"
+    #sg_path = "data\\processed_graphs\\sample_graphs.pmol"
     #data_loader = fetch_dataloader(sg_path, sp=sp)
     
     
