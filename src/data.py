@@ -303,8 +303,9 @@ if __name__ == "__main__":
     
     #torchload(sp)
     batch = next(iter(data_loader))
-    padded = pad_graph_batch(batch, 0, 0)
-    print(padded[0])
+    padded = pad_graph(batch, 0)
+    print(padded)
+    
 
     n=4
     m = np.random.randint(10, size=(n,n, 6))
