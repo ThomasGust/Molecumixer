@@ -19,6 +19,7 @@ from config import X_MAP as x_map
 from config import E_MAP as e_map
 from stopit import threading_timeoutable as timeoutable
 import numpy as np
+import random
 
 def compute_hamming_distance(v):
     """This function computes the hamming distance between a permutation vector and the base permutation
@@ -29,8 +30,22 @@ def compute_hamming_distance(v):
     print(list(zip(base, v)))
     return sum([0 if v1 == v2 else 1 for v1, v2 in list(zip(base, v))])
 
-def permute_hamming_vector():
-    pass
+def permute_hamming_vector(n, max_distance):
+    base_vector = list(range(n))
+    permuted_vector = base_vector.copy()
+    
+    max_distance = min(max_distance, n)
+    
+    for _ in range(max_distance):
+        idx1, idx2 = random.sample(range(n), 2)
+
+        permuted_vector[idx1], permuted_vector[idx2] = permuted_vector[idx2], permuted_vector[idx1]
+        current_distance = sum([1 for i, j in zip(base_vector, permuted_vector) if i != j])
+
+        if current_distance >= max_distance:
+            break
+    
+    return permuted_vector
 
 def permuted_nodes(graph, chunks, maximum_hamming_distance):
     permutation_vector = list(range(chunks**2))
