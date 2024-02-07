@@ -23,7 +23,7 @@ def edge_index_to_sparse_adjacency(edge_index, num_nodes):
     adjacency_matrix = csr_matrix((data, (source_nodes, target_nodes)), shape=(num_nodes, num_nodes))
 
     return adjacency_matrix
-    
+
 def dump(path, obj):
     with open(path, "wb") as f:
         pkl.dump(obj, f)

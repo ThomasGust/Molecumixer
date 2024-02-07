@@ -23,6 +23,10 @@ import random
 from utils import from_smiles, to_smiles
 from paddings import pad_nodes, pad_edge_attr, pad_edge_index, pad_graph, pad_graph_batch
 
+# A LOT OF THE BELOW CODE THAT DEALS WITH PERMUTATIONS WILL NEED TO GET REWORKED.
+# PERMUTATIONS NEED TO BE APPLIED BEFORE PADDING. BECAUSE OF THIS, PERMUTATION FUNCTIONS WILL NEED TO
+# HANDLE MATRICES OF VARYING SIZES. BY DOING IT THIS WAY, WE SHOULD ALSO BE ABLE TO ELIMINATE THE NEED
+# FOR SWAPPING BACK AND FORTH BETWEEN EDGE INDEXs AND ADJACENCY MATRICES, WHICH IS NICE. #TODO
 
 def compute_hamming_distance(v):
     """This function computes the hamming distance between a permutation vector and the base permutation
