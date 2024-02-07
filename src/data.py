@@ -68,10 +68,12 @@ def permute_square_matrix(matrix, new_orientation, chunk_size):
 
 
 # MAXIMUM HAMMING DISTANCE IN ALL OF THESE FUNCTIONS WILL BE DECIDED RANDOMNLY
+"""
 def permute_nodes(graph, chunks, maximum_hamming_distance):
     orientation = list(range(chunks**2))
     permuted_vector = permute_hamming_vector(len(orientation), maximum_hamming_distance)
-
+"""
+#I've decided it makes more sense to consider only permuting the edges.
 def permute_edges(graph, chunks, maximum_hamming_distance):
     permuted, label = None, None
     return permuted, label
@@ -383,5 +385,5 @@ if __name__ == "__main__":
     
     
     #torchload(sp)
-    hamming_distance = compute_hamming_distance([0, 1, 2, 3, 4, 5])
-    print(hamming_distance)
+    #hamming_distance = compute_hamming_distance([0, 1, 2, 3, 4, 5])
+    #print(hamming_distance)
