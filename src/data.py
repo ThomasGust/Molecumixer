@@ -35,7 +35,7 @@ def permute_hamming_vector(n, max_distance):
     permuted_vector = base_vector.copy()
     
     max_distance = min(max_distance, n)
-    
+
     for _ in range(max_distance):
         idx1, idx2 = random.sample(range(n), 2)
 
@@ -47,6 +47,7 @@ def permute_hamming_vector(n, max_distance):
     
     return permuted_vector
 
+# MAXIMUM HAMMING DISTANCE IN ALL OF THESE FUNCTIONS WILL BE DECIDED RANDOMNLY
 def permute_nodes(graph, chunks, maximum_hamming_distance):
     orientation = list(range(chunks**2))
     permuted_vector = permute_hamming_vector(len(orientation), maximum_hamming_distance)
