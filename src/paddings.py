@@ -3,10 +3,10 @@ sys.path.append('C:\\Users\\Thomas\\OneDrive\\Apps\\Documents\\Visual studio cod
 
 import torch
 import numpy as np
-from utils import torchload
-from data import from_smiles
+from utils import torchload, from_smiles
 from config import MAX_MOLECULE_SIZE, MAX_EDGES
 import torch.nn.functional as F
+
 #print(MAX_EDGES)
 #dataloader = torchload()
 

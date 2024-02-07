@@ -7,6 +7,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 from config import ELEMENT_BASE as element_base
 from config import MAX_MOLECULE_SIZE
 from config import E_MAP
+from typing import Any
 
 ATOMIC_NUMBERS =  list(range(0, 119))
 SUPPORTED_ATOMS = [element_base[i][0] for i in ATOMIC_NUMBERS]
