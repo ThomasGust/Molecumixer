@@ -47,6 +47,26 @@ def permute_hamming_vector(n, max_distance):
     
     return permuted_vector
 
+def permute_square_matrix(matrix, new_orientation, chunk_size):
+    n = matrix.shape[0] 
+    num_chunks_per_side = n // chunk_size
+    
+    permuted_matrix = np.zeros_like(matrix)
+    
+    for new_pos, original_pos in enumerate(new_orientation):
+        
+        original_row = (original_pos // num_chunks_per_side) * chunk_size
+        original_col = (original_pos % num_chunks_per_side) * chunk_size
+        
+        new_row = (new_pos // num_chunks_per_side) * chunk_size
+        new_col = (new_pos % num_chunks_per_side) * chunk_size
+        
+        permuted_matrix[new_row:new_row+chunk_size, new_col:new_col+chunk_size] = \
+            matrix[original_row:original_row+chunk_size, original_col:original_col+chunk_size]
+    
+    return permuted_matrix
+
+
 # MAXIMUM HAMMING DISTANCE IN ALL OF THESE FUNCTIONS WILL BE DECIDED RANDOMNLY
 def permute_nodes(graph, chunks, maximum_hamming_distance):
     orientation = list(range(chunks**2))
