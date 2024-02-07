@@ -9,7 +9,7 @@ from typing import Any
 from rdkit import Chem, RDLogger
 from rdkit.Chem import Descriptors, AllChem, MACCSkeys, rdMolDescriptors, RDKFingerprint, Descriptors3D, GraphDescriptors, DataStructs
 from rdkit.Avalon import pyAvalonTools as avalon
-from utils import load, dump, torchload, torchdump, timeout
+from utils import load, dump, torchload, torchdump#, timeout
 import torch
 
 from torch_geometric.loader import DataLoader
@@ -387,3 +387,5 @@ if __name__ == "__main__":
     #torchload(sp)
     #hamming_distance = compute_hamming_distance([0, 1, 2, 3, 4, 5])
     #print(hamming_distance)
+    m = np.random.rand(4, 4)
+    print(m)
