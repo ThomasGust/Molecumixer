@@ -408,12 +408,12 @@ if __name__ == "__main__":
     #hamming_distance = compute_hamming_distance([0, 1, 2, 3, 4, 5])
     #print(hamming_distance)
     n=4
-    m = np.random.randint(10, size=(n,n))
-    print(m)
+    m = np.random.randint(10, size=(n,n, 6))
+    print(m[:,:,0])
     c = 4
     
     new_orientation = permute_hamming_vector(c, 3)
     print(new_orientation)
 
-    new_matrix = permute_square_matrix(m, new_orientation, 2)
-    print(new_matrix)
+    new_matrix = permute_matrix_chunks_3d(m, new_orientation, 2)
+    print(new_matrix[:,:,0])
