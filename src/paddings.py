@@ -30,6 +30,7 @@ print(rand_hiv.size)
 
 def pad_nodes(n, v):
     ln = n.size()[0]
+    print(ln)
     padding_length = MAX_MOLECULE_SIZE - ln
     assert ln != 0
     assert padding_length >= 0

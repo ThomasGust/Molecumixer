@@ -8,12 +8,22 @@ from config import ELEMENT_BASE as element_base
 from config import MAX_MOLECULE_SIZE
 from config import E_MAP
 from typing import Any
+from scipy.sparse import csr_matrix
 
 ATOMIC_NUMBERS =  list(range(0, 119))
 SUPPORTED_ATOMS = [element_base[i][0] for i in ATOMIC_NUMBERS]
 SUPPORTED_EDGES = E_MAP['bond_type']
 DISABLE_RDKIT_WARNINGS = False
 
+def edge_index_to_sparse_adjacency(edge_index, num_nodes):
+    source_nodes = edge_index[0, :]
+    target_nodes = edge_index[1, :]
+
+    data = np.ones(edge_index.shape[1], dtype=int)
+    adjacency_matrix = csr_matrix((data, (source_nodes, target_nodes)), shape=(num_nodes, num_nodes))
+
+    return adjacency_matrix
+    
 def dump(path, obj):
     with open(path, "wb") as f:
         pkl.dump(obj, f)

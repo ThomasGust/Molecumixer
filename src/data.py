@@ -23,6 +23,7 @@ import random
 from utils import from_smiles, to_smiles
 from paddings import pad_nodes, pad_edge_attr, pad_edge_index, pad_graph, pad_graph_batch
 
+
 def compute_hamming_distance(v):
     """This function computes the hamming distance between a permutation vector and the base permutation
         It counts the spots that don't equal one another
@@ -112,8 +113,13 @@ def permute_horizontal_chunks(matrix, new_orientation, chunk_height):
 # MAXIMUM HAMMING DISTANCE IN ALL OF THESE FUNCTIONS WILL BE DECIDED RANDOMNLY
 
 def permute_nodes(graph, chunks, maximum_hamming_distance):
-    orientation = list(range(chunks**2))
-    permuted_vector = permute_hamming_vector(len(orientation), maximum_hamming_distance)
+    permuted_vector = permute_hamming_vector(chunks, maximum_hamming_distance)
+    node_matrix = graph.x
+
+    permuted_matrix = permute_horizontal_chunks(node_matrix, permuted_vector, chunks)
+    graph.x = permuted_matrix
+
+    return graph
 
 def permute_edges(graph, chunks, maximum_hamming_distance):
     permuted, label = None, None
@@ -303,17 +309,5 @@ if __name__ == "__main__":
     
     #torchload(sp)
     batch = next(iter(data_loader))
-    padded = pad_graph(batch, 0)
+    padded = pad_graph(batch[0], 0)
     print(padded)
-    
-
-    n=4
-    m = np.random.randint(10, size=(n,n, 6))
-    print(m[:,:,0])
-    c = 4
-    
-    new_orientation = permute_hamming_vector(c, 3)
-    print(new_orientation)
-
-    new_matrix = permute_matrix_chunks_3d(m, new_orientation, 2)
-    print(new_matrix[:,:,0])
