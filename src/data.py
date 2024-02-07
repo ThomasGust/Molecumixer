@@ -66,6 +66,26 @@ def permute_square_matrix(matrix, new_orientation, chunk_size):
     
     return permuted_matrix
 
+def permute_matrix_chunks_3d(matrix, new_orientation, chunk_size):
+    """
+    Permute chunks of a 3D matrix (n x n x m) to match a new orientation, keeping the third dimension intact.
+    """
+    n, _, m = matrix.shape  # Assuming the matrix has shape (n, n, m)
+    num_chunks_per_side = n // chunk_size
+    
+    permuted_matrix = np.zeros_like(matrix)
+    
+    for new_pos, original_pos in enumerate(new_orientation):
+        original_row = (original_pos // num_chunks_per_side) * chunk_size
+        original_col = (original_pos % num_chunks_per_side) * chunk_size
+        new_row = (new_pos // num_chunks_per_side) * chunk_size
+        new_col = (new_pos % num_chunks_per_side) * chunk_size
+        
+        permuted_matrix[new_row:new_row+chunk_size, new_col:new_col+chunk_size, :] = \
+            matrix[original_row:original_row+chunk_size, original_col:original_col+chunk_size, :]
+    
+    return permuted_matrix
+
 
 # MAXIMUM HAMMING DISTANCE IN ALL OF THESE FUNCTIONS WILL BE DECIDED RANDOMNLY
 """
@@ -387,5 +407,13 @@ if __name__ == "__main__":
     #torchload(sp)
     #hamming_distance = compute_hamming_distance([0, 1, 2, 3, 4, 5])
     #print(hamming_distance)
-    m = np.random.rand(4, 4)
+    n=4
+    m = np.random.randint(10, size=(n,n))
     print(m)
+    c = 4
+    
+    new_orientation = permute_hamming_vector(c, 3)
+    print(new_orientation)
+
+    new_matrix = permute_square_matrix(m, new_orientation, 2)
+    print(new_matrix)
