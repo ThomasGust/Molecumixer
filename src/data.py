@@ -47,14 +47,15 @@ def permute_hamming_vector(n, max_distance):
     
     return permuted_vector
 
-def permuted_nodes(graph, chunks, maximum_hamming_distance):
-    permutation_vector = list(range(chunks**2))
+def permute_nodes(graph, chunks, maximum_hamming_distance):
+    orientation = list(range(chunks**2))
+    permuted_vector = permute_hamming_vector(len(orientation), maximum_hamming_distance)
 
-def permuted_edges(graph, chunks, maximum_hamming_distance):
+def permute_edges(graph, chunks, maximum_hamming_distance):
     permuted, label = None, None
     return permuted, label
 
-def permuted_graph(graph, chunks, maximum_hamming_distance):
+def permute_graph(graph, chunks, maximum_hamming_distance):
     permuted, label = None, None
     return permuted, label
 
