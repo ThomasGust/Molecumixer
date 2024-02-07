@@ -48,6 +48,9 @@ def permute_hamming_vector(n, max_distance):
     return permuted_vector
 
 def permute_square_matrix(matrix, new_orientation, chunk_size):
+    """
+    Permute chunks of an (nXn) matrix to match a new orientation (n must be divisible by chunk_size)
+    """
     n = matrix.shape[0] 
     num_chunks_per_side = n // chunk_size
     
@@ -83,6 +86,23 @@ def permute_matrix_chunks_3d(matrix, new_orientation, chunk_size):
         
         permuted_matrix[new_row:new_row+chunk_size, new_col:new_col+chunk_size, :] = \
             matrix[original_row:original_row+chunk_size, original_col:original_col+chunk_size, :]
+    
+    return permuted_matrix
+
+def permute_horizontal_chunks(matrix, new_orientation, chunk_height):
+    """
+    Permute horizontal chunks of a 2D matrix (n x m) while keeping the m dimension intact.
+    """
+    n, m = matrix.shape
+    num_chunks = n // chunk_height
+    
+    permuted_matrix = np.zeros_like(matrix)
+    
+    for new_pos, original_pos in enumerate(new_orientation):
+        original_row_start = original_pos * chunk_height
+        new_row_start = new_pos * chunk_height
+        
+        permuted_matrix[new_row_start:new_row_start+chunk_height, :] = matrix[original_row_start:original_row_start+chunk_height, :]
     
     return permuted_matrix
 
