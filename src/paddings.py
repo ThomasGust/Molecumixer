@@ -46,7 +46,8 @@ def pad_edge_attr(e, v):
 
 def pad_edge_index(e, v):
     le = e.size()[1]
-    padding_length = MAX_EDGES - le
+    padding_lengt
+    h = MAX_EDGES - le
     assert le != 0
     assert padding_length >= 0
     
