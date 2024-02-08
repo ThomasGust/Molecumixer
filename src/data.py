@@ -330,5 +330,7 @@ if __name__ == "__main__":
     
     #torchload(sp)
     batch = next(iter(data_loader))
-    padded = pad_graph(batch[0], 0)
-    print(padded)
+    print(batch[0].x)
+    permuted = permute_nodes(batch[0], 4, 2)
+    print(permuted.x)
+
