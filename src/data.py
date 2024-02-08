@@ -148,7 +148,8 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
     edge_index = torch.permute(graph.edge_index, (1,0))
     top = edge_index[:, 0]
     permuted_top = permute_n_m_matrix(top, permuted_vector)
-    permuted_index = permute_n_m_matrix(edge_index, permuted_vector)
+
+    edge_index[:, 0] = permuted_top
 
     permuted_index = torch.permute(permuted_index, (1,0))
 
