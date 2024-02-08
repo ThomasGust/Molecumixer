@@ -56,7 +56,7 @@ def permute_hamming_vector(n, max_distance):
     
     return permuted_vector
 
-def permute_node_matrix(matrix, new_orientation):
+def permute_n_m_matrix(matrix, new_orientation):
     # In the future, we might want this function to randomize where it places the odd numbered chunk
 
 
