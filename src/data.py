@@ -39,7 +39,7 @@ def compute_hamming_distance(v):
     return sum([0 if v1 == v2 else 1 for v1, v2 in list(zip(base, v))])
 
 
-def permute_hamming_vector(n, max_distance):
+def get_orientation_vector(n, max_distance):
     base_vector = list(range(n))
     permuted_vector = base_vector.copy()
     
