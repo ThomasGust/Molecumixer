@@ -56,7 +56,7 @@ def permute_hamming_vector(n, max_distance):
     
     return permuted_vector
 
-def permute_nodes(matrix, new_orientation):
+def permute_node_matrix(matrix, new_orientation):
     # In the future, we might want this function to randomize where it places the odd numbered chunk
 
 
@@ -137,7 +137,7 @@ def permute_horizontal_chunks(matrix, new_orientation, chunk_height):
 def permute_nodes(graph, chunks, maximum_hamming_distance):
     permuted_vector = permute_hamming_vector(chunks, maximum_hamming_distance)
     node_matrix = graph.x
-
+    permute_nodes_matrix()
     permuted_matrix = permute_horizontal_chunks(node_matrix, permuted_vector, chunks)
     graph.x = permuted_matrix
 
