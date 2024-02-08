@@ -338,4 +338,5 @@ if __name__ == "__main__":
     permuted = permute_nodes(batch[0], 4, 2)
     print(permuted.x)
     """
+    print("TEST")
 
