@@ -30,7 +30,7 @@ def get_orientation_vector(n, max_distance):
     
     return permuted_vector
 
-def permute_n_m_matrix(matrix, new_orientation):
+def shuffle_n_m_matrix(matrix, new_orientation):
     # In the future, we might want this function to randomize where it places the odd numbered chunk
 
 
@@ -53,7 +53,7 @@ def permute_n_m_matrix(matrix, new_orientation):
 def permute_nodes(graph, chunks, maximum_hamming_distance):
     orientation_vector = get_orientation_vector(chunks, maximum_hamming_distance)
     node_matrix = graph.x
-    permuted_matrix = permute_n_m_matrix(node_matrix, orientation_vector)
+    permuted_matrix = shuffle_n_m_matrix(node_matrix, orientation_vector)
     graph.x = permuted_matrix
 
     return graph, orientation_vector
@@ -63,7 +63,7 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
     orientation_vector = get_orientation_vector(chunks, maximum_hamming_distance)
     edge_index = torch.permute(graph.edge_index, (1,0))
     top = edge_index[:, 0]
-    permuted_top = permute_n_m_matrix(top, orientation_vector)
+    permuted_top = shuffle_n_m_matrix(top, orientation_vector)
 
     edge_index[:, 0] = permuted_top
     permuted_edge_index = torch.permute(edge_index, (1,0))
@@ -71,7 +71,7 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
 
     
     edge_attributes = graph.edge_attr
-    permuted_edge_attributes = permute_n_m_matrix(edge_attributes, orientation_vector)
+    permuted_edge_attributes = shuffle_n_m_matrix(edge_attributes, orientation_vector)
     graph.edge_attr = permuted_edge_attributes
 
     return graph, orientation_vector
