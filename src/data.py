@@ -339,4 +339,6 @@ if __name__ == "__main__":
     print(permuted.x)
     """
     print("TEST")
+    print(batch.x.shape)
+    print(batch.edge_index)
 
