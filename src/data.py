@@ -330,7 +330,7 @@ if __name__ == "__main__":
     
     #torchload(sp)
     batch = next(iter(data_loader))
-
+    print(batch.x.shape)
     print(batch.edge_index)
     """
     print(np.array(batch[0].x))
