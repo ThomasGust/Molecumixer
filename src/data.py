@@ -155,8 +155,6 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
 
     #I still need to implement the edge attribute permutation
 
-
-
     return permuted, label
 
 def permute_graph(graph, chunks, maximum_hamming_distance):
