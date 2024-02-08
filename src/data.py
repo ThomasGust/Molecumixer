@@ -20,9 +20,6 @@ from config import X_MAP as x_map
 from config import E_MAP as e_map
 from stopit import threading_timeoutable as timeoutable
 import numpy as np
-import random
-from utils import from_smiles, to_smiles
-from paddings import pad_nodes, pad_edge_attr, pad_edge_index, pad_graph, pad_graph_batch
 
 def calculate_descriptors(mol):
     o = list(Descriptors.CalcMolDescriptors(mol).values())
