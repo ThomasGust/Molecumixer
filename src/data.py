@@ -330,7 +330,8 @@ if __name__ == "__main__":
     
     #torchload(sp)
     batch = next(iter(data_loader))
-    print(batch[0].x)
+    print(np.array(batch[0].x))
+    print()
     permuted = permute_nodes(batch[0], 4, 2)
     print(permuted.x)
 
