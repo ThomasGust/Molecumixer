@@ -137,8 +137,7 @@ def permute_horizontal_chunks(matrix, new_orientation, chunk_height):
 def permute_nodes(graph, chunks, maximum_hamming_distance):
     permuted_vector = permute_hamming_vector(chunks, maximum_hamming_distance)
     node_matrix = graph.x
-    permute_nodes_matrix()
-    permuted_matrix = permute_horizontal_chunks(node_matrix, permuted_vector, chunks)
+    permuted_matrix = permute_node_matrix(node_matrix, permuted_vector)
     graph.x = permuted_matrix
 
     return graph
