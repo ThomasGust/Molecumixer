@@ -143,7 +143,7 @@ def permute_nodes(graph, chunks, maximum_hamming_distance):
     return graph
 
 def permute_edges(graph, chunks, maximum_hamming_distance):
-    permuted, label = None, None
+    # Permutes on side of the edge index and the whole edge attributes according to a permutation vector with a fixed hamming distance
     permuted_vector = permute_hamming_vector(chunks, maximum_hamming_distance)
     edge_index = torch.permute(graph.edge_index, (1,0))
     top = edge_index[:, 0]
@@ -153,16 +153,12 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
     permuted_edge_index = torch.permute(edge_index, (1,0))
     graph.edge_index = permuted_edge_index
 
-    #I still need to implement the edge attribute permutation
+    
     edge_attributes = graph.edge_attr
     permuted_edge_attributes = permute_n_m_matrix(edge_attributes, permuted_vector)
     graph.edge_attr = permuted_edge_attributes
 
     return graph, permuted_vector
-
-def permute_graph(graph, chunks, maximum_hamming_distance):
-    permuted, label = None, None
-    return permuted, label
 
 def calculate_descriptors(mol):
     o = list(Descriptors.CalcMolDescriptors(mol).values())
