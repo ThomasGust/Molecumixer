@@ -158,7 +158,7 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
     permuted_edge_attributes = permute_n_m_matrix(edge_attributes, permuted_vector)
     graph.edge_attr = permuted_edge_attributes
 
-    return permuted, label
+    return graph, permuted_vector
 
 def permute_graph(graph, chunks, maximum_hamming_distance):
     permuted, label = None, None
