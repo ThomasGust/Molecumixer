@@ -146,6 +146,7 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
     permuted, label = None, None
     permuted_vector = permute_hamming_vector(chunks, maximum_hamming_distance)
     edge_index = graph.edge_index
+    
     return permuted, label
 
 def permute_graph(graph, chunks, maximum_hamming_distance):
