@@ -11,6 +11,7 @@ from rdkit.Chem import Descriptors, AllChem, MACCSkeys, rdMolDescriptors, RDKFin
 from rdkit.Avalon import pyAvalonTools as avalon
 from utils import load, dump, torchload, torchdump#, timeout
 import torch
+import math
 
 from torch_geometric.loader import DataLoader
 from torch_geometric.data import Data
@@ -55,11 +56,30 @@ def permute_hamming_vector(n, max_distance):
     
     return permuted_vector
 
+def permute_nodes(matrix, new_orientation):
+    # In the future, we might want this function to randomize where it places the odd numbered chunk
+
+
+    n, m = matrix.shape
+    num_chunks = len(new_orientation)
+    
+    permuted_matrix = np.zeros_like(matrix)
+    chunk_height = int(math.floor(n/num_chunks))
+    
+    for new_pos, original_pos in enumerate(new_orientation):
+        
+        original_row_start = original_pos * chunk_height
+        new_row_start = new_pos * chunk_height
+        current_chunk_height = chunk_height if (original_pos < num_chunks - 1) else n - original_row_start
+        
+        permuted_matrix[new_row_start:new_row_start+current_chunk_height, :] = matrix[original_row_start:original_row_start+current_chunk_height, :]
+    
+    return permuted_matrix
+
 """
 def permute_square_matrix(matrix, new_orientation, chunk_size):
-    """
+    
     #Permute chunks of an (nXn) matrix to match a new orientation (n must be divisible by chunk_size)
-    """
     n = matrix.shape[0] 
     num_chunks_per_side = n // chunk_size
     
@@ -79,9 +99,7 @@ def permute_square_matrix(matrix, new_orientation, chunk_size):
     return permuted_matrix
 
 def permute_matrix_chunks_3d(matrix, new_orientation, chunk_size):
-    """
     #Permute chunks of a 3D matrix (n x n x m) to match a new orientation, keeping the third dimension intact.
-    """
     n, _, m = matrix.shape  # Assuming the matrix has shape (n, n, m)
     num_chunks_per_side = n // chunk_size
     
@@ -99,9 +117,7 @@ def permute_matrix_chunks_3d(matrix, new_orientation, chunk_size):
     return permuted_matrix
 
 def permute_horizontal_chunks(matrix, new_orientation, chunk_height):
-    """
     #Permute horizontal chunks of a 2D matrix (n x m) while keeping the m dimension intact.
-    """
     n, m = matrix.shape
     num_chunks = n // chunk_height
     
