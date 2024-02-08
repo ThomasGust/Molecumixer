@@ -1,33 +1,8 @@
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.preprocessing import normalize
-
-from tqdm import tqdm
-from typing import Any
-
-from rdkit import Chem, RDLogger
-from rdkit.Chem import Descriptors, AllChem, MACCSkeys, rdMolDescriptors, RDKFingerprint, Descriptors3D, GraphDescriptors, DataStructs
-from rdkit.Avalon import pyAvalonTools as avalon
-from utils import load, dump, torchload, torchdump#, timeout
 import torch
 import math
-
-from torch_geometric.loader import DataLoader
-from torch_geometric.data import Data
-import torch_geometric
-from config import X_MAP as x_map
-from config import E_MAP as e_map
-from stopit import threading_timeoutable as timeoutable
 import numpy as np
 import random
-from utils import from_smiles, to_smiles
-from paddings import pad_nodes, pad_edge_attr, pad_edge_index, pad_graph, pad_graph_batch
-
-# A LOT OF THE BELOW CODE THAT DEALS WITH PERMUTATIONS WILL NEED TO GET REWORKED.
-# PERMUTATIONS NEED TO BE APPLIED BEFORE PADDING. BECAUSE OF THIS, PERMUTATION FUNCTIONS WILL NEED TO
-# HANDLE MATRICES OF VARYING SIZES. BY DOING IT THIS WAY, WE SHOULD ALSO BE ABLE TO ELIMINATE THE NEED
-# FOR SWAPPING BACK AND FORTH BETWEEN EDGE INDEXs AND ADJACENCY MATRICES, WHICH IS NICE. #TODO
 
 def compute_hamming_distance(v):
     """This function computes the hamming distance between a permutation vector and the base permutation
