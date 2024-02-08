@@ -154,8 +154,9 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
     graph.edge_index = permuted_edge_index
 
     #I still need to implement the edge attribute permutation
-    edge_attributes = graph.edge_attributes
+    edge_attributes = graph.edge_attr
     permuted_edge_attributes = permute_n_m_matrix(edge_attributes, permuted_vector)
+    graph.edge_attr = permuted_edge_attributes
 
     return permuted, label
 
