@@ -135,7 +135,7 @@ def permute_horizontal_chunks(matrix, new_orientation, chunk_height):
 # MAXIMUM HAMMING DISTANCE IN ALL OF THESE FUNCTIONS WILL BE DECIDED AT TRAINING TIME
 
 def permute_nodes(graph, chunks, maximum_hamming_distance):
-    permuted_vector = permute_hamming_vector(chunks, maximum_hamming_distance)
+    orientation_vector = permute_hamming_vector(chunks, maximum_hamming_distance)
     node_matrix = graph.x
     permuted_matrix = permute_n_m_matrix(node_matrix, permuted_vector)
     graph.x = permuted_matrix
