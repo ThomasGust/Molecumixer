@@ -10,7 +10,6 @@ def compute_hamming_distance(v):
     """
     c = len(v)
     base = [i for i in range(c)]
-    #print(list(zip(base, v)))
     return sum([0 if v1 == v2 else 1 for v1, v2 in list(zip(base, v))])
 
 
