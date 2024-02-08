@@ -282,6 +282,4 @@ if __name__ == "__main__":
     
     #torchload(sp)
     batch = next(iter(data_loader))
-    print(batch[0].edge_attr.shape, batch[0].edge_index.shape)
-    print(batch[0].edge_attr)
 
