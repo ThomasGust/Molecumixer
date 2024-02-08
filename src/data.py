@@ -146,7 +146,7 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
     permuted, label = None, None
     permuted_vector = permute_hamming_vector(chunks, maximum_hamming_distance)
     edge_index = graph.edge_index
-    
+
     return permuted, label
 
 def permute_graph(graph, chunks, maximum_hamming_distance):
@@ -333,15 +333,5 @@ if __name__ == "__main__":
     
     #torchload(sp)
     batch = next(iter(data_loader))
-    print(batch.x.shape)
-    print(batch.edge_index)
-    """
-    print(np.array(batch[0].x))
-    print()
-    permuted = permute_nodes(batch[0], 4, 2)
-    print(permuted.x)
-    """
-    print("TEST")
-    print(batch.x.shape)
-    print(batch.edge_index)
+    print(batch[0])
 
