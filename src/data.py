@@ -21,6 +21,8 @@ from config import E_MAP as e_map
 from stopit import threading_timeoutable as timeoutable
 import numpy as np
 
+from 
+
 def calculate_descriptors(mol):
     o = list(Descriptors.CalcMolDescriptors(mol).values())
     return o
