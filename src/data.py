@@ -204,4 +204,4 @@ if __name__ == "__main__":
     mol1 = batch[0]
 
     permuted_nodes = permute_nodes(mol1, 5, 3)
-
+    print(permuted_nodes)
