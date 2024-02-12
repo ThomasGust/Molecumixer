@@ -75,3 +75,6 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
     graph.edge_attr = permuted_edge_attributes
 
     return graph, orientation_vector
+
+if  __name__ == "__main__":
+    
