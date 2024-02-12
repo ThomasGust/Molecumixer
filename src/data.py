@@ -199,8 +199,6 @@ if __name__ == "__main__":
     print("FETCHING DATALOADER")
     sg_path = "data\\processed_graphs\\sample_graphs.pmol"
     data_loader = fetch_dataloader(sg_path, sp=sp)
-    
-    
-    #torchload(sp)
+
     batch = next(iter(data_loader))
 
