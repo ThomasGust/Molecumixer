@@ -202,5 +202,6 @@ if __name__ == "__main__":
 
     batch = next(iter(data_loader))
     mol1 = batch[0]
+
     
 
