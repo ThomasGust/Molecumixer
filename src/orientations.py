@@ -61,6 +61,7 @@ def permute_nodes(graph, chunks, maximum_hamming_distance):
 def permute_edges(graph, chunks, maximum_hamming_distance):
     # Permutes on side of the edge index and the whole edge attributes according to a permutation vector with a fixed hamming distance
     orientation_vector = get_orientation_vector(chunks, maximum_hamming_distance)
+    print(orientation_vector)
     edge_index = torch.permute(graph.edge_index, (1,0))
     top = edge_index[:, 0][:, None]
 
