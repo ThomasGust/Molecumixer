@@ -76,7 +76,7 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
     
     edge_attributes = graph.edge_attr
     permuted_edge_attributes = shuffle_n_m_matrix(edge_attributes, orientation_vector)
-    print(permuted_edge_attr-edge_attributes)
+    print(permuted_edge_attributes-edge_attributes)
     graph.edge_attr = permuted_edge_attributes
 
     return graph, orientation_vector
