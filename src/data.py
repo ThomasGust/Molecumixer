@@ -206,3 +206,4 @@ if __name__ == "__main__":
     permuted_nodes = permute_nodes(mol1, 5, 3)
     permuted_edges = permute_edges(mol1, 5, 3)
     print(permuted_edges)
+    print(permuted_edges)
