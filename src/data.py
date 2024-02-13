@@ -208,4 +208,4 @@ if __name__ == "__main__":
 
     #print(permuted_edges.edge_attr-mol1.edge_attr)
     #print(mol1.edge_index-permuted_edges.edge_index)
-    #print(permuted_edges.edge_index)
+    #print(permuted_edges.edge_index
