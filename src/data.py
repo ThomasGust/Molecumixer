@@ -203,7 +203,7 @@ if __name__ == "__main__":
     batch = next(iter(data_loader))
     mol1 = batch[0]
 
-    permuted_nodes = permute_nodes(mol1, 5, 3)
-    permuted_edges = permute_edges(mol1, 5, 3)
+    permuted_nodes, _ = permute_nodes(mol1, 5, 3)
+    permuted_edges, _ = permute_edges(mol1, 5, 3)
     print(mol1.edge_index)
     print(permuted_edges.edge_index)
