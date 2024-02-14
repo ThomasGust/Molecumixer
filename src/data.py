@@ -207,3 +207,4 @@ if __name__ == "__main__":
     permuted_edges, _ = permute_edges(mol1, 5, 3)
     
     print(permuted_edges.edge_attr-mol1.edge_attr)
+    print(permuted_edges.edge_attr.shape, mol1.edge_attr.shape)
