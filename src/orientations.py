@@ -56,7 +56,7 @@ def permute_nodes(graph, chunks, maximum_hamming_distance):
     permuted_matrix = shuffle_n_m_matrix(node_matrix, orientation_vector)
     x = {"x":torch.tensor(permuted_matrix), "orientation":orientation_vector}
 
-    return graph, orientation_vector
+    return x
 
 def permute_edges(graph, chunks, maximum_hamming_distance):
     # Permutes on side of the edge index and the whole edge attributes according to a permutation vector with a fixed hamming distance
