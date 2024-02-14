@@ -54,7 +54,7 @@ def permute_nodes(graph, chunks, maximum_hamming_distance):
     orientation_vector = get_orientation_vector(chunks, maximum_hamming_distance)
     node_matrix = graph.x
     permuted_matrix = shuffle_n_m_matrix(node_matrix, orientation_vector)
-    graph.x = permuted_matrix
+    x = {"x":torch.tensor(permuted_matrix), "orientation":orientation_vector}
 
     return graph, orientation_vector
 
