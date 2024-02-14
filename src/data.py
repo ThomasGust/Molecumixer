@@ -211,6 +211,5 @@ if __name__ == "__main__":
     print(subtracted)
 
     attributes = permuted_edges['edge_attr']
-    #print(mol1.edge_attr.shape, attributes.shape)
     subtracted = mol1.edge_attr - attributes
     print(subtracted)
