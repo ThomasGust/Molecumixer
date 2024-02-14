@@ -211,6 +211,6 @@ if __name__ == "__main__":
     print(subtracted)
 
     attributes = torch.permute(permuted_edges['edge_attr'], (1, 0))
-    print(mol1.edge_attr.shape)
+    print(mol1.edge_attr.shape, attributes.shape)
     subtracted = mol1.edge_attr - attributes
     print(subtracted)
