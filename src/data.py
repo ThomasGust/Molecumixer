@@ -208,3 +208,5 @@ if __name__ == "__main__":
     
     attributes  = torch.permute(permuted_edges['edge_index'], (1, 0))
     subtracted = mol1.edge_attribtes - attributes
+
+    print(subtracted)
