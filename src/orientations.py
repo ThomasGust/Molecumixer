@@ -77,7 +77,7 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
     new_edge_index[:, 1] = edge_index[:, 1]
 
     print(edge_index-new_edge_index)
-    graph.edge_index = new_edge_index
+    new_graph.edge_index = new_edge_index
 
     
     edge_attributes = graph.edge_attr
