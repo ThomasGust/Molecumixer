@@ -75,13 +75,11 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
     new_edge_index = torch.zeros_like(edge_index)
     new_edge_index[:, 0] = torch.tensor(permuted_top[:, 0])
     new_edge_index[:, 1] = edge_index[:, 1]
-
-    new_graph.edge_index = torch.permute(new_edge_index, (1,0))
     
     edge_attributes = graph.edge_attr
     permuted_edge_attributes = shuffle_n_m_matrix(edge_attributes, orientation_vector)
     #print(edge_attributes-permuted_edge_attributes)
     new_graph.edge_attr = torch.permute(torch.tensor(permuted_edge_attributes), (1,0))
 
-    x = {"edge_index": torch.permute(new_edge_index, (1, 0)), "edge_attr": torch.permute(torch.tensor(permuted_edge_attributes), (1, 0)), "orientation":orientation_vector}
+    x = {"edge_index": new_edge_index, "edge_attr": torch.permute(torch.tensor(permuted_edge_attributes), (1, 0)), "orientation":orientation_vector}
     return x
