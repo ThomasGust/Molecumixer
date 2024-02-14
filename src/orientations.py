@@ -69,7 +69,7 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
 
     permuted_top = shuffle_n_m_matrix(top, orientation_vector)
 
-    print(edge_index[:, 0])
+    print(edge_index[:, 0]-permuted_top[:, 0])
     edge_index[:, 0] = torch.tensor(permuted_top[:, 0])
     permuted_edge_index = torch.permute(edge_index, (1,0))
     graph.edge_index = permuted_edge_index
