@@ -208,8 +208,8 @@ if __name__ == "__main__":
     
     index  = permuted_edges['edge_index']
     subtracted = mol1.edge_index - index
-    print(subtracted)
+    #print(subtracted)
 
     attributes = permuted_edges['edge_attr']
     subtracted = mol1.edge_attr - attributes
-    print(subtracted)
+    #print(subtracted)
