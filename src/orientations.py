@@ -63,6 +63,7 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
     # ADD TORCH.TENSOR TO ALL NUMPY AREAS WHEN REFERENCING THEM TO GRAPH
 
     new_graph = graph
+    
     orientation_vector = get_orientation_vector(chunks, maximum_hamming_distance)
     print(orientation_vector)
     edge_index = torch.permute(graph.edge_index, (1,0))
