@@ -202,3 +202,4 @@ if __name__ == "__main__":
 
     batch = next(iter(data_loader))
     permuted_nodes = permute_nodes(batch, 25, 10)
+    print(permuted_nodes)
