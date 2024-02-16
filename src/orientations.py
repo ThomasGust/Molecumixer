@@ -82,3 +82,4 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
 
 def permute_each_nodes(graphs, chunks, maximum_hamming_distance):
     batch_index = graphs.batch
+    
