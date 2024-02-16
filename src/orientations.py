@@ -80,4 +80,4 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
     
     return x
 
-def batchwise_permutation(graph_batch, chunks, maximum_hamming_distance)
+def batchwise_node_permutation(graph_batch, chunks, maximum_hamming_distance)
