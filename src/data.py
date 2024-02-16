@@ -200,6 +200,7 @@ if __name__ == "__main__":
     sg_path = "data\\processed_graphs\\sample_graphs.pmol"
     data_loader = fetch_dataloader(sg_path, sp=sp)
 
+    BATCH_SIZE = 32
     batch = next(iter(data_loader))
     permuted_nodes = permute_nodes(batch, 25, 10)
     print(permuted_nodes['x'].shape, batch.x.shape)
