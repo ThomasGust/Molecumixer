@@ -201,4 +201,4 @@ if __name__ == "__main__":
     data_loader = fetch_dataloader(sg_path, sp=sp)
 
     batch = next(iter(data_loader))
-    permuted_nodes = permute_nodes(batch, 25, 10)
+    permuted_nodes = permute_nodes(batch, 25, 10w)
