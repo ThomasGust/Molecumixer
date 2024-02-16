@@ -79,7 +79,3 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
     x = {"edge_index":torch.permute(new_edge_index, (1, 0)), "edge_attr": torch.tensor(permuted_edge_attributes), "orientation":orientation_vector}
     
     return x
-
-def batch_node_permutation(graph_batch, chunks, maximum_hamming_distance):
-    # The above functions handle permutations for individual molecular graphs, this function will handle them in batches
-    
