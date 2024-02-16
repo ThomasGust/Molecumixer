@@ -201,4 +201,4 @@ if __name__ == "__main__":
     data_loader = fetch_dataloader(sg_path, sp=sp)
 
     batch = next(iter(data_loader))
-    print(np.array(batch.batch)
+    print(np.array(batch.batch))
