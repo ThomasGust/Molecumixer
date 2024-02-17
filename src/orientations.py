@@ -96,6 +96,7 @@ def permute_each_nodes(graphs, chunks, maximum_hamming_distance):
     split_nodes = split_tensor(graphs.x, graphs.batch)
 
     new_nodes = []
+    orientations = []
     for nodes in split_nodes:
         orientation_vector = get_orientation_vector(chunks, maximum_hamming_distance)
         permuted_matrix = shuffle_n_m_matrix(nodes, orientation_vector)
