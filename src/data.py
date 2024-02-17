@@ -204,4 +204,4 @@ if __name__ == "__main__":
     batch = next(iter(data_loader))
     permuted_nodes = permute_nodes(batch, BATCH_SIZE*5, int(BATCH_SIZE*5/2))
     split = permute_each_nodes(batch, None, None)
-    print(split.shape
+    print(split.shape)
