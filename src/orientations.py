@@ -80,7 +80,7 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
     
     return x
 
-def split_tensor(tensor, batch_index):
+def split_tensor(t, batch_index):
     batch_index = batch_index.to(torch.int64)
     unique_batches = torch.unique(batch_index)
     split_tensors = []
