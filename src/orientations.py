@@ -92,6 +92,7 @@ def split_tensor(t, batch_index):
     return split_tensors
 
 def permute_each_nodes(graphs, chunks, maximum_hamming_distance):
+    #I don't know if this function will actually be used for anyting, we can probably do the reorientations across the whole batch and simplify the whole thing
 
     split_nodes = split_tensor(graphs.x, graphs.batch)
 
