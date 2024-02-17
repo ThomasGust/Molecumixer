@@ -93,6 +93,7 @@ def split_tensor(t, batch_index):
 
 def permute_each_nodes(graphs, chunks, maximum_hamming_distance):
     o = []
+    
     split_nodes = split_tensor(graphs.x, graphs.batch)
 
     for nodes in split_nodes:
