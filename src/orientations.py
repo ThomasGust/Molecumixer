@@ -87,6 +87,6 @@ def permute_each_nodes(graphs, chunks, maximum_hamming_distance):
 
     for batch_id in unique_batches:
         mask = (batch_index == batch_id)
-        split_tensors.append(batch_index[mask])
+        split_tensors.append(graphs.x[mask])
 
     return split_tensors
