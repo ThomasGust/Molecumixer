@@ -21,7 +21,7 @@ from config import E_MAP as e_map
 from stopit import threading_timeoutable as timeoutable
 import numpy as np
 
-from orientations import permute_edges, permute_nodes, get_orientation_vector
+from orientations import permute_edges, permute_nodes, get_orientation_vector, split_tensor
 
 def calculate_descriptors(mol):
     o = list(Descriptors.CalcMolDescriptors(mol).values())
