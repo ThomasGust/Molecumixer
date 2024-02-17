@@ -81,5 +81,12 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
     return x
 
 def permute_each_nodes(graphs, chunks, maximum_hamming_distance):
-    batch_index = graphs.batch
-    
+    batch_index = graphs.batch.to(torch.int64)
+    unique_batches = torch.unique(batch_index)
+    split_tensors = []
+
+    for batch_id in unique_batches:
+        mask = (batch_tensor == batch_id)
+        split_tensors.append(original_tensor[mask])
+
+    return split_tensors
