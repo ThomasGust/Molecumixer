@@ -21,7 +21,7 @@ from config import E_MAP as e_map
 from stopit import threading_timeoutable as timeoutable
 import numpy as np
 
-from orientations import permute_edges, permute_nodes, get_orientation_vector, split_tensor
+from orientations import permute_edges, permute_nodes, get_orientation_vector, permute_each_nodes
 
 def calculate_descriptors(mol):
     o = list(Descriptors.CalcMolDescriptors(mol).values())
@@ -203,4 +203,4 @@ if __name__ == "__main__":
     BATCH_SIZE = 32
     batch = next(iter(data_loader))
     permuted_nodes = permute_nodes(batch, BATCH_SIZE*5, int(BATCH_SIZE*5/2))
-    split = split_tensor(batch)
+    split = split_tensor(batch, x)
