@@ -203,4 +203,4 @@ if __name__ == "__main__":
     BATCH_SIZE = 32
     batch = next(iter(data_loader))
     permuted_nodes = permute_nodes(batch, BATCH_SIZE*5, int(BATCH_SIZE*5/2))
-    split = split_tensor(permuted_nodes["x"], BATCH_SIZE)
+    split = split_tensor(batch)
