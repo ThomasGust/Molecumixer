@@ -102,3 +102,4 @@ def permute_each_nodes(graphs, chunks, maximum_hamming_distance):
         permuted_matrix = shuffle_n_m_matrix(nodes, orientation_vector)
         nodes = torch.tensor(permuted_matrix)
         new_nodes.append(nodes)
+        orientations.append(orientation_vector)
