@@ -96,7 +96,7 @@ def permute_each_nodes(graphs, chunks, maximum_hamming_distance):
 
     split_nodes = split_tensor(graphs.x, graphs.batch)
 
-    new_nodes = torch.empty()
+    new_nodes = torch.empty(0)
     orientations = []
 
     for nodes in split_nodes:
