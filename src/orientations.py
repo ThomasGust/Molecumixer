@@ -92,4 +92,4 @@ def split_tensor(tensor, batch_index):
     return split_tensors
 
 def permute_each_nodes(graphs, chunks, maximum_hamming_distance):
-    split_nodes = split_tensor(graphs.batch, graphs.batch)
+    split_nodes = split_tensor(graphs.x, graphs.batch)
