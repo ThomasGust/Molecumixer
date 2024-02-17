@@ -87,7 +87,7 @@ def split_tensor(t, batch_index):
 
     for batch_id in unique_batches:
         mask = (batch_index == batch_id)
-        split_tensors.append(tensor[mask])
+        split_tensors.append(t[mask])
 
     return split_tensors
 
