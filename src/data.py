@@ -199,7 +199,8 @@ if __name__ == "__main__":
     print("FETCHING DATALOADER")
     sg_path = "data\\processed_graphs\\sample_graphs.pmol"
     data_loader = fetch_dataloader(sg_path, sp=sp)
-
+    
+    #There is still some more work to be done on getting the orientation functions to work properly
     BATCH_SIZE = 32
     batch = next(iter(data_loader))
     permuted_nodes = permute_nodes(batch, BATCH_SIZE*5, int(BATCH_SIZE*5/2))
