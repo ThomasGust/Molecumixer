@@ -186,8 +186,7 @@ def fetch_dataloader(pmol_path, bs=32, shuffle=True, sp=None, fpdtype=np.uint8):
         graph.avfp = avfp
 
         if i % 4 == 0:
-            print(graph.batch)
-            nodes, orientation = permute_each_nodes(graph, chunks=NODE_SHUFFLE_DECODER_DIMENSION, maximum_hamming_distance=int(NODE_SHUFFLE_DECODER_DIMENSION/3.0))
+            nodes, orientation = permute_nodes(graph, chunks=NODE_SHUFFLE_DECODER_DIMENSION, maximum_hamming_distance=int(NODE_SHUFFLE_DECODER_DIMENSION/3.0))
             graph.x = nodes
             graph.orientation = orientation
 
@@ -202,6 +201,5 @@ def fetch_dataloader(pmol_path, bs=32, shuffle=True, sp=None, fpdtype=np.uint8):
     return dataloader
 
 if __name__ == "__main__":
-    #compute_sample()
-    #compute_sample()
-    fetch_dataloader(pmol_path="data\\processed_graphs\\sample_graphs_5k.pmol", sp="test_dl.dl")
+    compute_sample()
+    dl = fetch_dataloader("data\\processed_graphs\\sample_graphs_5k.pmol")
