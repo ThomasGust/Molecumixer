@@ -211,6 +211,7 @@ def adj_matrix_to_edge_list(adj_matrix):
     
     return edge_list
 #Testing
+#Testing
 
 def edge_index_loss(true_edge_index, adj_logits, batch_dim):
     adj_matrix = edge_list_to_adj_matrix(true_edge_index, MAX_MOLECULE_SIZE*batch_dim)
