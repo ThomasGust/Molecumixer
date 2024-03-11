@@ -4,6 +4,8 @@ import math
 import numpy as np
 import random
 
+# I SHOULD REDO THE CODE TO GENERATE ORIENTATIONS
+
 def compute_hamming_distance(v):
     """This function computes the hamming distance between a permutation vector and the base permutation
         It counts the spots that don't equal one another
@@ -48,6 +50,7 @@ def shuffle_n_m_matrix(matrix, new_orientation):
         
         permuted_matrix[new_row_start:new_row_start+current_chunk_height, :] = matrix[original_row_start:original_row_start+current_chunk_height, :]
     
+    #print(permuted_matrix.shape)
     return permuted_matrix
 
 def permute_nodes(graph, chunks, maximum_hamming_distance):
@@ -81,7 +84,6 @@ def permute_edges(graph, chunks, maximum_hamming_distance):
     return x
 
 def split_tensor(t, batch_index):
-    print(batch_index)
     batch_index = batch_index.to(torch.int64)
     unique_batches = torch.unique(batch_index)
     split_tensors = []
@@ -108,7 +110,7 @@ def permute_each_nodes(graphs, chunks, maximum_hamming_distance):
         new_nodes = torch.cat((new_nodes, nodes), 0)
         orientations.append(orientation_vector)
     
-    return new_nodes, orientations
+    return {"x":new_nodes,"orientation":torch.tensor(orientations)}
 
 if __name__ == "__main__":
     pass

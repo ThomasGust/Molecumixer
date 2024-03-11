@@ -124,7 +124,7 @@ def compute_sample():
     _graphs = []
     _cntr = []
 
-    for graph, smiles in tqdm(data[:320]):
+    for graph, smiles in tqdm(data[:5000]):
         try:
             descriptors, descriptors3d, graph_descriptors, fingerprints = calculate(smiles, timeout=5)
             _descriptors.append(descriptors)
@@ -186,7 +186,7 @@ def fetch_dataloader(pmol_path, bs=32, shuffle=True, sp=None, fpdtype=np.uint8):
         graph.avfp = avfp
 
         if i % 4 == 0:
-            nodes, orientation = permute_nodes(graph, chunks=NODE_SHUFFLE_DECODER_DIMENSION, maximum_hamming_distance=int(NODE_SHUFFLE_DECODER_DIMENSION/3.0))
+            nodes, orientation = permute_(graph, chunks=NODE_SHUFFLE_DECODER_DIMENSION, maximum_hamming_distance=int(NODE_SHUFFLE_DECODER_DIMENSION/3.0))
             graph.x = nodes
             graph.orientation = orientation
 
@@ -202,4 +202,15 @@ def fetch_dataloader(pmol_path, bs=32, shuffle=True, sp=None, fpdtype=np.uint8):
 
 if __name__ == "__main__":
     #compute_sample()
-    dl = fetch_dataloader("data\\processed_graphs\\sample_graphs_5k.pmol", sp="molloader.dl")
+    
+    sp = "data\\loaders\\sample_loader.moldata"
+    print("FETCHING DATALOADER")
+    sg_path = "data\\processed_graphs\\sample_graphs.pmol"
+    data_loader = fetch_dataloader(sg_path, sp=sp)
+    
+    #There is still some more work to be done on getting the orientation functions to work properly
+    BATCH_SIZE = 32
+    batch = next(iter(data_loader))
+    permuted_nodes = permute_nodes(batch, BATCH_SIZE*5, int(BATCH_SIZE*5/2))
+    nodes, orientation = permute_each_nodes(batch, 5, 2)
+    print(nodes.shape, orientation)

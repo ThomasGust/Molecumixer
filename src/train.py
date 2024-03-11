@@ -18,6 +18,7 @@ from tqdm import tqdm
 from torch.optim.lr_scheduler import ReduceLROnPlateau, StepLR
 from torch.utils.data import DataLoader
 from plotter import load_stats
+from orientations import permute_each_nodes, permute_nodes
 
 # THIS WHOLE FILE IS VERY UNORGANIZED AND NEEDS TO GET REDONE AT SOME POINT
 print("FINISHED IMPORTS")
@@ -135,11 +136,11 @@ def train_one_epoch(epoch, model, train_loader, sp=None, stats_sp=None):
 
     _shuffle_losses = []
 
-    for _, batch in enumerate(tqdm(train_loader)):
+    for i, batch in enumerate(tqdm(train_loader)):
         batch.to(device)
         #print(batch.size)
 
-        if True:
+        if i % 4 != 0:
             # I am currently unsure how I should handle training for multiple tasks, below is a descriptor and fingerprint training step
             # I will probably end up needing to design a router for this kind of task
 
@@ -195,12 +196,21 @@ def train_one_epoch(epoch, model, train_loader, sp=None, stats_sp=None):
         
         else:
             # Now we will actually train a shuffle prediction batch
-            # Training is horrifically unuorganized right now
-            embedding = model(batch.x.float(), batch.edge_attr.float(), batch.edge_index, batch.batch)
+            # Training is horrifically unorganized right now
+            #nodes, orientation = permute_each_nodes(batch.cpu(), NODE_SHUFFLE_DECODER_DIMENSION, int(NODE_SHUFFLE_DECODER_DIMENSION/3))
+
+
+            x = permute_each_nodes(batch.cpu(), NODE_SHUFFLE_DECODER_DIMENSION, int(NODE_SHUFFLE_DECODER_DIMENSION/3))
+            nodes, orientation = x['x'], x['orientation']
+            batch.to(device)
+
+            nodes = torch.tensor(nodes)
+            embedding = model(nodes.float().to(device), batch.edge_attr.float().to(device), batch.edge_index.to(device), batch.batch.to(device))
+            #print(embedding.shape)
             
             node_shuffle_prediction = node_shuffle_projection(embedding)
             
-            shuffle_label = batch.orientation.float().to(device)
+            shuffle_label = torch.tensor(orientation).float().to(device)
 
             shuffle_loss = F.binary_cross_entropy_with_logits(node_shuffle_prediction.float(), shuffle_label.float())
 
