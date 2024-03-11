@@ -2,6 +2,7 @@ import sys
 sys.path.append('C:\\Users\\Thomas\\OneDrive\\Apps\\Documents\\GitHub\\Molecumixer\\src')
 from utils import (torchload, dump, load, torchdump)
 from utils import SUPPORTED_EDGES, SUPPORTED_ATOMS, MAX_MOLECULE_SIZE
+from config import NODE_SHUFFLE_DECODER_DIMENSION
 from models import CGTNN, LinearProjection, GVAE
 from itertools import chain
 import os
@@ -78,6 +79,8 @@ maccs_proj = LinearProjection(BEST_PARAMETERS['model_embedding_size'][0], n_o=16
 rdkfp_proj = LinearProjection(BEST_PARAMETERS['model_embedding_size'][0], n_o=2048).to(device)
 avfp_proj = LinearProjection(BEST_PARAMETERS['model_embedding_size'][0], n_o=512).to(device)
 
+node_shuffle_projection = LinearProjection(BEST_PARAMETERS['model_embedding_size'], NODE_SHUFFLE_DECODER_DIMENSION).to(device)
+
 class RMSELoss(nn.Module):
     def __init__(self, eps=1e-6):
         super().__init__()
@@ -97,7 +100,7 @@ def concat_generators(*args):
 
 params = concat_generators(model.parameters(),descriptor_proj.parameters(),descriptor3d_proj.parameters()
                              ,graph_descriptors_proj.parameters(),mfp2_proj.parameters(),mfp3_proj.parameters(),
-                             maccs_proj.parameters(),rdkfp_proj.parameters(),avfp_proj.parameters())
+                             maccs_proj.parameters(),rdkfp_proj.parameters(),avfp_proj.parameters(), node_shuffle_projection.parameters())
 
 total_optimizer = optim.Adam(params, lr=1e-3)
 
@@ -124,6 +127,8 @@ def train_one_epoch(epoch, model, train_loader, sp=None, stats_sp=None):
     _fp_losses = []
 
     _t_losses = []
+
+    _shuffle_losses = []
 
     for _, batch in enumerate(tqdm(train_loader)):
         batch.to(device)
