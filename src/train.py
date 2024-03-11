@@ -26,7 +26,7 @@ BATCH_SIZE = 32
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 cpu = torch.device("cpu")
 #device = torch.device("cpu")
-dataloader = torchload("molecular_analysis\\data_dir\\loaders\\sample_loader.moldata")
+dataloader = torchload("data\\loaders\\sample_loader.moldata")
 print("LOADED DATALOADER")
 
 def avg(l):
@@ -80,7 +80,7 @@ maccs_proj = LinearProjection(BEST_PARAMETERS['model_embedding_size'][0], n_o=16
 rdkfp_proj = LinearProjection(BEST_PARAMETERS['model_embedding_size'][0], n_o=2048).to(device)
 avfp_proj = LinearProjection(BEST_PARAMETERS['model_embedding_size'][0], n_o=512).to(device)
 
-node_shuffle_projection = LinearProjection(BEST_PARAMETERS['model_embedding_size'], NODE_SHUFFLE_DECODER_DIMENSION).to(device)
+node_shuffle_projection = LinearProjection(BEST_PARAMETERS['model_embedding_size'][0], NODE_SHUFFLE_DECODER_DIMENSION).to(device)
 
 class RMSELoss(nn.Module):
     def __init__(self, eps=1e-6):
