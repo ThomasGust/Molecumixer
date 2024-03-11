@@ -101,13 +101,14 @@ def concat_generators(*args):
 
 params = concat_generators(model.parameters(),descriptor_proj.parameters(),descriptor3d_proj.parameters()
                              ,graph_descriptors_proj.parameters(),mfp2_proj.parameters(),mfp3_proj.parameters(),
-                             maccs_proj.parameters(),rdkfp_proj.parameters(),avfp_proj.parameters(), node_shuffle_projection.parameters())
+                             maccs_proj.parameters(),rdkfp_proj.parameters(),avfp_proj.parameters())
 
 total_optimizer = optim.Adam(params, lr=1e-3)
 p = 3
 scheduler = ReduceLROnPlateau(encoder_optimizer, 'min',patience=p, )
 
-shuffle_optimizer = optim.Adam(params, lr=1e-3)
+shuffle_params = concat_generators(model.parameters(), node_shuffle_projection.parameters())
+shuffle_optimizer = optim.Adam(shuffle_params, lr=1e-3)
 p=3
 shuffle_scheduler = ReduceLROnPlateau(shuffle_optimizer, 'min', patience=p)
 
@@ -138,7 +139,7 @@ def train_one_epoch(epoch, model, train_loader, sp=None, stats_sp=None):
         batch.to(device)
         #print(batch.size)
 
-        if batch.orientation is None:
+        if True:
             # I am currently unsure how I should handle training for multiple tasks, below is a descriptor and fingerprint training step
             # I will probably end up needing to design a router for this kind of task
 
@@ -285,6 +286,6 @@ def train_one_epoch(epoch, model, train_loader, sp=None, stats_sp=None):
 
 if __name__ == "__main__":
     for epoch in range(50):
-        train_one_epoch(epoch, model, dataloader, sp=f"molecular_analysis\\checkpoints\\cgtnn\\EPOCH{epoch}", stats_sp=f"molecular_analysis\\checkpoints\\cgtnn\\EPOCH{epoch}")
-    data = load_stats("molecular_analysis\\checkpoints\\cgtnn")
-    dump("molecular_analysis\\checkpoints\\cgtnn\\cgtnn.stats")
+        train_one_epoch(epoch, model, dataloader, sp=f"checkpoints\\cgtnn\\EPOCH{epoch}", stats_sp=f"checkpoints\\cgtnn\\EPOCH{epoch}")
+    data = load_stats("checkpoints\\cgtnn")
+    dump("checkpoints\\cgtnn\\cgtnn.stats")
