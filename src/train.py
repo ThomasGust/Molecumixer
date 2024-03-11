@@ -103,9 +103,12 @@ params = concat_generators(model.parameters(),descriptor_proj.parameters(),descr
                              maccs_proj.parameters(),rdkfp_proj.parameters(),avfp_proj.parameters(), node_shuffle_projection.parameters())
 
 total_optimizer = optim.Adam(params, lr=1e-3)
-
 p = 3
 scheduler = ReduceLROnPlateau(encoder_optimizer, 'min',patience=p, )
+
+shuffle_optimizer = optim.Adam(params, lr=1e-3)
+p=3
+shuffle_scheduler = ReduceLROnPlateau(shuffle_optimizer, 'min', patience=p)
 
 def count_params(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
@@ -133,55 +136,82 @@ def train_one_epoch(epoch, model, train_loader, sp=None, stats_sp=None):
     for _, batch in enumerate(tqdm(train_loader)):
         batch.to(device)
         #print(batch.size)
-        descriptors = filter_inf(torch.tensor(np.array(batch.descriptors)).to(device).float())
-        descriptors3d = filter_inf(torch.tensor(np.array(batch.descriptors3d)).to(device).float())
-        graph_descriptors = filter_inf(torch.tensor(np.array(batch.graph_descriptors)).to(device).float())
 
-        mfp2 = torch.tensor(np.array(batch.mfp2)).to(device)#.float()
-        mfp3 = torch.tensor(np.array(batch.mfp3)).to(device).float()
-        maccs = torch.tensor(np.array(batch.maccs)).to(device).float()
-        rdkfp = torch.tensor(np.array(batch.rdkfp)).to(device).float()
-        avfp = torch.tensor(np.array(batch.avfp)).to(device).float()
+        if batch.orientation is None:
+            # I am currently unsure how I should handle training for multiple tasks, below is a descriptor and fingerprint training step
+            # I will probably end up needing to design a router for this kind of task
 
-        embedding = model(batch.x.float(), batch.edge_attr.float(), batch.edge_index, batch.batch)
+            descriptors = filter_inf(torch.tensor(np.array(batch.descriptors)).to(device).float())
+            descriptors3d = filter_inf(torch.tensor(np.array(batch.descriptors3d)).to(device).float())
+            graph_descriptors = filter_inf(torch.tensor(np.array(batch.graph_descriptors)).to(device).float())
 
-        descriptor_pred = descriptor_proj(embedding)
-        descriptor3d_pred = descriptor3d_proj(embedding)
-        graph_descriptor_pred = graph_descriptors_proj(embedding)
+            mfp2 = torch.tensor(np.array(batch.mfp2)).to(device)#.float()
+            mfp3 = torch.tensor(np.array(batch.mfp3)).to(device).float()
+            maccs = torch.tensor(np.array(batch.maccs)).to(device).float()
+            rdkfp = torch.tensor(np.array(batch.rdkfp)).to(device).float()
+            avfp = torch.tensor(np.array(batch.avfp)).to(device).float()
 
-        mfp2_pred = mfp2_proj(embedding)
-        mfp3_pred = mfp3_proj(embedding)
-        maccs_pred = maccs_proj(embedding)
-        rdkfp_pred = rdkfp_proj(embedding)
-        avfp_pred = avfp_proj(embedding)
+            embedding = model(batch.x.float(), batch.edge_attr.float(), batch.edge_index, batch.batch)
 
-        descriptor_loss = torch.sqrt(F.mse_loss(descriptor_pred.float(), descriptors.float()))
-        descriptors3d_loss = torch.sqrt(F.mse_loss(descriptor3d_pred.float(), descriptors3d.float()))
-        graph_descriptor_loss = torch.sqrt(F.mse_loss(graph_descriptor_pred.float(), graph_descriptors.float()))
+            descriptor_pred = descriptor_proj(embedding)
+            descriptor3d_pred = descriptor3d_proj(embedding)
+            graph_descriptor_pred = graph_descriptors_proj(embedding)
 
-        mfp2_loss = F.binary_cross_entropy_with_logits(mfp2_pred.float(), mfp2.float())
-        mfp3_loss = F.binary_cross_entropy_with_logits(mfp3_pred.float(), mfp3.float())
-        maccs_loss = F.binary_cross_entropy_with_logits(maccs_pred.float(), maccs.float())
-        rdkfp_loss = F.binary_cross_entropy_with_logits(rdkfp_pred.float(), rdkfp.float())
-        avfp_loss = F.binary_cross_entropy_with_logits(avfp_pred.float(), avfp.float())
+            mfp2_pred = mfp2_proj(embedding)
+            mfp3_pred = mfp3_proj(embedding)
+            maccs_pred = maccs_proj(embedding)
+            rdkfp_pred = rdkfp_proj(embedding)
+            avfp_pred = avfp_proj(embedding)
 
-        _descriptor_losses.append(descriptor_loss.item())
-        _descriptors3d_losses.append(descriptors3d_loss.item())
-        _graph_descriptors_losses.append(graph_descriptor_loss.item())
-        _accum_descriptor_losses.append(descriptor_loss.item()+descriptors3d_loss.item()+graph_descriptor_loss.item())
+            descriptor_loss = torch.sqrt(F.mse_loss(descriptor_pred.float(), descriptors.float()))
+            descriptors3d_loss = torch.sqrt(F.mse_loss(descriptor3d_pred.float(), descriptors3d.float()))
+            graph_descriptor_loss = torch.sqrt(F.mse_loss(graph_descriptor_pred.float(), graph_descriptors.float()))
 
-        _mfp2_losses.append(mfp2_loss.item())
-        _mfp3_losses.append(mfp3_loss.item())
-        _maccs_losses.append(maccs_loss.item())
-        _rdkfp_losses.append(rdkfp_loss.item())
-        _avfp_losses.append(avfp_loss.item())
-        _fp_losses.append(mfp2_loss.item()+mfp3_loss.item()+maccs_loss.item()+rdkfp_loss.item()+avfp_loss.item())
+            mfp2_loss = F.binary_cross_entropy_with_logits(mfp2_pred.float(), mfp2.float())
+            mfp3_loss = F.binary_cross_entropy_with_logits(mfp3_pred.float(), mfp3.float())
+            maccs_loss = F.binary_cross_entropy_with_logits(maccs_pred.float(), maccs.float())
+            rdkfp_loss = F.binary_cross_entropy_with_logits(rdkfp_pred.float(), rdkfp.float())
+            avfp_loss = F.binary_cross_entropy_with_logits(avfp_pred.float(), avfp.float())
 
-        t_loss = mfp2_loss+mfp3_loss+maccs_loss+rdkfp_loss+avfp_loss+descriptor_loss+descriptors3d_loss+graph_descriptor_loss
-        _t_losses.append(t_loss.item())
-        total_optimizer.zero_grad()
-        t_loss.backward()
-        total_optimizer.step()
+            _descriptor_losses.append(descriptor_loss.item())
+            _descriptors3d_losses.append(descriptors3d_loss.item())
+            _graph_descriptors_losses.append(graph_descriptor_loss.item())
+            _accum_descriptor_losses.append(descriptor_loss.item()+descriptors3d_loss.item()+graph_descriptor_loss.item())
+
+            _mfp2_losses.append(mfp2_loss.item())
+            _mfp3_losses.append(mfp3_loss.item())
+            _maccs_losses.append(maccs_loss.item())
+            _rdkfp_losses.append(rdkfp_loss.item())
+            _avfp_losses.append(avfp_loss.item())
+            _fp_losses.append(mfp2_loss.item()+mfp3_loss.item()+maccs_loss.item()+rdkfp_loss.item()+avfp_loss.item())
+
+            t_loss = mfp2_loss+mfp3_loss+maccs_loss+rdkfp_loss+avfp_loss+descriptor_loss+descriptors3d_loss+graph_descriptor_loss
+            _t_losses.append(t_loss.item())
+            total_optimizer.zero_grad()
+            t_loss.backward()
+            total_optimizer.step()
+        
+        else:
+            # Now we will actually train a shuffle prediction batch
+            # Training is horrifically unuorganized right now
+            embedding = model(batch.x.float(), batch.edge_attr.float(), batch.edge_index, batch.batch)
+            
+            node_shuffle_prediction = node_shuffle_projection(embedding)
+            
+            shuffle_label = batch.orientation.float().to(device)
+
+            shuffle_loss = F.binary_cross_entropy_with_logits(node_shuffle_prediction.float(), shuffle_label.float())
+
+            _shuffle_losses.append(shuffle_loss.item())
+
+            #We cannot just use the same loss, I think that would really throw off the optimizer.
+            # For now I am just using a seperate optimizer
+
+            shuffle_optimizer.zero_grad()
+            shuffle_loss.backward()
+            total_optimizer.step()
+            
+
 
     epoch_descriptor_loss = avg(_descriptor_losses)
     epoch_descriptor3d_loss = avg(_descriptors3d_losses)
