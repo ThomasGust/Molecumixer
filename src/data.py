@@ -206,4 +206,3 @@ if __name__ == "__main__":
     permuted_nodes = permute_nodes(batch, BATCH_SIZE*5, int(BATCH_SIZE*5/2))
     nodes, orientation = permute_each_nodes(batch, 5, 2)
     print(nodes.shape, orientation)
-    

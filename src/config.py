@@ -220,3 +220,5 @@ NUM_INRING = len(list(X_MAP['is_in_ring'])) # 2
 NUM_BOND_TYPES = len(list(E_MAP['bond_type']))
 NUM_STEREO = len(list(E_MAP['stereo']))
 NUM_CONJUGATED = len(list(E_MAP['is_conjugated'])) # 2
+
+NODE_SHUFFLE_DECODER_DIMENSION = 25

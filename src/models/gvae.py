@@ -6,7 +6,7 @@ import numpy as np
 import sys
 sys.path.append('C:\\Users\\Thomas\\OneDrive\\Apps\\Documents\\GitHub\\Molecumixer')
 from config import (NUM_AROMATIC, NUM_ATOMS, NUM_BOND_TYPES, NUM_CHIRALITIES, NUM_CONJUGATED, NUM_DEGREES, NUM_FORMAL_CHARGES,
-                    NUM_HS, NUM_INRING, NUM_RADICAL_ELECTRONS, NUM_HYBRIDIZATION, NUM_STEREO, MAX_MOLECULE_SIZE, E_MAP, ELEMENT_BASE)
+                    NUM_HS, NUM_INRING, NUM_RADICAL_ELECTRONS, NUM_HYBRIDIZATION, NUM_STEREO, MAX_MOLECULE_SIZE, E_MAP, ELEMENT_BASE, NODE_SHUFFLE_DECODER_DIMENSION)
 from paddings import pad_graph_batch, compute_mask
 from utils import torchload, torchdump
 from models import CGTNN
@@ -90,6 +90,9 @@ class GVAE(nn.Module):
 
         # Now for the edge index decoder
         self.edge_index_decode = Linear(self.decoder_neurons, MAX_MOLECULE_SIZE*self.node_embedding_dim)
+
+        node_shuffle_decode_dim = NODE_SHUFFLE_DECODER_DIMENSION
+        self.node_shuffle_decoder = Linear(self.decoder_neurons, node_shuffle_decode_dim)
 
     
     def reparameterize(self, mu, logvar):
