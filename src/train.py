@@ -6,7 +6,7 @@ from config import NODE_SHUFFLE_DECODER_DIMENSION
 from models import CGTNN, LinearProjection, GVAE
 from itertools import chain
 import os
-from data import to_smiles
+from utils import to_smiles
 
 import numpy as np
 import torch_geometric
@@ -19,6 +19,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau, StepLR
 from torch.utils.data import DataLoader
 from plotter import load_stats
 
+# THIS WHOLE FILE IS VERY UNORGANIZED AND NEEDS TO GET REDONE AT SOME POINT
 print("FINISHED IMPORTS")
 
 BATCH_SIZE = 32
@@ -210,8 +211,6 @@ def train_one_epoch(epoch, model, train_loader, sp=None, stats_sp=None):
             shuffle_optimizer.zero_grad()
             shuffle_loss.backward()
             total_optimizer.step()
-            
-
 
     epoch_descriptor_loss = avg(_descriptor_losses)
     epoch_descriptor3d_loss = avg(_descriptors3d_losses)
