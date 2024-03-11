@@ -9,6 +9,10 @@ from config import MAX_MOLECULE_SIZE
 from config import E_MAP
 from typing import Any
 from scipy.sparse import csr_matrix
+import numpy as np
+from config import X_MAP
+import torch_geometric
+from torch_geometric.data import Data
 
 ATOMIC_NUMBERS =  list(range(0, 119))
 SUPPORTED_ATOMS = [element_base[i][0] for i in ATOMIC_NUMBERS]
@@ -67,15 +71,15 @@ def from_smiles(smiles: str, with_hydrogen: bool = False,
     xs = []
     for atom in mol.GetAtoms():
         x = []
-        x.append(x_map['atomic_num'].index(atom.GetAtomicNum()))
-        x.append(x_map['chirality'].index(str(atom.GetChiralTag())))
-        x.append(x_map['degree'].index(atom.GetTotalDegree()))
-        x.append(x_map['formal_charge'].index(atom.GetFormalCharge()))
-        x.append(x_map['num_hs'].index(atom.GetTotalNumHs()))
-        x.append(x_map['num_radical_electrons'].index(atom.GetNumRadicalElectrons()))
-        x.append(x_map['hybridization'].index(str(atom.GetHybridization())))
-        x.append(x_map['is_aromatic'].index(atom.GetIsAromatic()))
-        x.append(x_map['is_in_ring'].index(atom.IsInRing()))
+        x.append(X_MAP['atomic_num'].index(atom.GetAtomicNum()))
+        x.append(X_MAP['chirality'].index(str(atom.GetChiralTag())))
+        x.append(X_MAP['degree'].index(atom.GetTotalDegree()))
+        x.append(X_MAP['formal_charge'].index(atom.GetFormalCharge()))
+        x.append(X_MAP['num_hs'].index(atom.GetTotalNumHs()))
+        x.append(X_MAP['num_radical_electrons'].index(atom.GetNumRadicalElectrons()))
+        x.append(X_MAP['hybridization'].index(str(atom.GetHybridization())))
+        x.append(X_MAP['is_aromatic'].index(atom.GetIsAromatic()))
+        x.append(X_MAP['is_in_ring'].index(atom.IsInRing()))
         xs.append(x)
 
     x = torch.tensor(xs, dtype=torch.long).view(-1, 9)
@@ -86,9 +90,9 @@ def from_smiles(smiles: str, with_hydrogen: bool = False,
         j = bond.GetEndAtomIdx()
 
         e = []
-        e.append(e_map['bond_type'].index(str(bond.GetBondType())))
-        e.append(e_map['stereo'].index(str(bond.GetStereo())))
-        e.append(e_map['is_conjugated'].index(bond.GetIsConjugated()))
+        e.append(E_MAP['bond_type'].index(str(bond.GetBondType())))
+        e.append(E_MAP['stereo'].index(str(bond.GetStereo())))
+        e.append(E_MAP['is_conjugated'].index(bond.GetIsConjugated()))
 
         edge_indices += [[i, j], [j, i]]
         edge_attrs += [e, e]
@@ -122,10 +126,10 @@ def to_smiles(data: 'torch_geometric.data.Data',
     for i in range(data.num_nodes):
         atom = Chem.Atom(data.x[i, 0].item())
         atom.SetChiralTag(Chem.rdchem.ChiralType.values[data.x[i, 1].item()])
-        atom.SetFormalCharge(x_map['formal_charge'][data.x[i, 3].item()])
-        atom.SetNumExplicitHs(x_map['num_hs'][data.x[i, 4].item()])
+        atom.SetFormalCharge(X_MAP['formal_charge'][data.x[i, 3].item()])
+        atom.SetNumExplicitHs(X_MAP['num_hs'][data.x[i, 4].item()])
         atom.SetNumRadicalElectrons(
-            x_map['num_radical_electrons'][data.x[i, 5].item()])
+            X_MAP['num_radical_electrons'][data.x[i, 5].item()])
         atom.SetHybridization(
             Chem.rdchem.HybridizationType.values[data.x[i, 6].item()])
         atom.SetIsAromatic(data.x[i, 7].item())
