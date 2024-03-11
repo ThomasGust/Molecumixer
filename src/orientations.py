@@ -108,3 +108,6 @@ def permute_each_nodes(graphs, chunks, maximum_hamming_distance):
         orientations.append(orientation_vector)
     
     return new_nodes, orientations
+
+if __name__ == "__main__":
+    pass
