@@ -201,5 +201,5 @@ def fetch_dataloader(pmol_path, bs=32, shuffle=True, sp=None, fpdtype=np.uint8):
     return dataloader
 
 if __name__ == "__main__":
-    compute_sample()
-    dl = fetch_dataloader("data\\processed_graphs\\sample_graphs_5k.pmol")
+    #compute_sample()
+    dl = fetch_dataloader("data\\processed_graphs\\sample_graphs_5k.pmol", sp="molloader.dl")
