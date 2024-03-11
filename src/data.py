@@ -18,6 +18,8 @@ from torch_geometric.data import Data
 import torch_geometric
 from config import X_MAP as x_map
 from config import E_MAP as e_map
+from config import NODE_SHUFFLE_DECODER_DIMENSION
+
 from stopit import threading_timeoutable as timeoutable
 import numpy as np
 
@@ -155,7 +157,7 @@ def fetch_dataloader(pmol_path, bs=32, shuffle=True, sp=None, fpdtype=np.uint8):
 
     new_graphs = []
     for i, graph in enumerate(tqdm(_graphs, "CREATING DATALOADER |")):
-
+        
         fingerprints = _fingerprints[i]
         descriptors = _descriptors[i]
         descriptors3d = _descriptors3d[i]
@@ -183,7 +185,13 @@ def fetch_dataloader(pmol_path, bs=32, shuffle=True, sp=None, fpdtype=np.uint8):
         graph.rdkfp = rdkfp
         graph.avfp = avfp
 
+        if i % 4 == 0:
+            nodes, orientation = permute_each_nodes(graph, chunks=NODE_SHUFFLE_DECODER_DIMENSION, maximum_hamming_distance=int(NODE_SHUFFLE_DECODER_DIMENSION/3.0))
+            graph.x = nodes
+            graph.orientation = orientation
+
         new_graphs.append(graph)
+
     
     dataloader = DataLoader(new_graphs, batch_size=bs, shuffle=shuffle)
 
