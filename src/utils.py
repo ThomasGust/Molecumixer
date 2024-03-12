@@ -108,6 +108,18 @@ def from_smiles(smiles: str, with_hydrogen: bool = False,
     return Data(x=x, edge_index=edge_index, edge_attr=edge_attr, smiles=smiles)
 
 
+def avg(l):
+    return sum(l)/len(l)
+
+def filter_inf(t, nan=0.0, pinf=0.0, ninf=0.0):
+    return torch.nan_to_num(t, nan=nan, posinf=pinf, neginf=ninf)
+
+def is_rational(mol_g):
+    try:
+        _ = to_smiles(mol_g)
+        return True
+    except Exception:
+        return False
 
 def to_smiles(data: 'torch_geometric.data.Data',
               kekulize: bool = False) -> Any:

@@ -30,19 +30,6 @@ cpu = torch.device("cpu")
 dataloader = torchload("data\\loaders\\sample_loader.moldata")
 print("LOADED DATALOADER")
 
-def avg(l):
-    return sum(l)/len(l)
-
-def filter_inf(t, nan=0.0, pinf=0.0, ninf=0.0):
-    return torch.nan_to_num(t, nan=nan, posinf=pinf, neginf=ninf)
-
-def is_rational(mol_g):
-    try:
-        _ = to_smiles(mol_g)
-        return True
-    except Exception:
-        return False
-
 BEST_PARAMETERS = {
     "batch_size": [128],
     "learning_rate": [0.01],
