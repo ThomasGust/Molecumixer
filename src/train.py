@@ -2,11 +2,11 @@ import sys
 sys.path.append('C:\\Users\\Thomas\\OneDrive\\Apps\\Documents\\GitHub\\Molecumixer\\src')
 from utils import (torchload, dump, load, torchdump)
 from utils import SUPPORTED_EDGES, SUPPORTED_ATOMS, MAX_MOLECULE_SIZE
-from config import NODE_SHUFFLE_DECODER_DIMENSION
+from config import NODE_SHUFFLE_DECODER_DIMENSION, BEST_PARAMETERS
 from models import CGTNN, LinearProjection, GVAE
 from itertools import chain
 import os
-from utils import to_smiles
+from utils import to_smiles, avg, is_rational, filter_inf, concat_generators
 
 import numpy as np
 import torch_geometric
@@ -29,22 +29,6 @@ cpu = torch.device("cpu")
 #device = torch.device("cpu")
 dataloader = torchload("data\\loaders\\sample_loader.moldata")
 print("LOADED DATALOADER")
-
-BEST_PARAMETERS = {
-    "batch_size": [128],
-    "learning_rate": [0.01],
-    "weight_decay": [0.0001],
-    "sgd_momentum": [0.8],
-    "scheduler_gamma": [0.8],
-    "pos_weight": [1.3],
-    "model_embedding_size": [1024],
-    "model_attention_heads": [6],
-    "model_layers": [8],
-    "model_dropout_rate": [0.2],
-    "model_top_k_ratio": [0.5],
-    "model_top_k_every_n": [1],
-    "model_dense_neurons": [256]
-}
 
 model = CGTNN(feature_size=9,
                 embedding_size=BEST_PARAMETERS['model_embedding_size'][0],
@@ -69,23 +53,9 @@ rdkfp_proj = LinearProjection(BEST_PARAMETERS['model_embedding_size'][0], n_o=20
 avfp_proj = LinearProjection(BEST_PARAMETERS['model_embedding_size'][0], n_o=512).to(device)
 
 node_shuffle_projection = LinearProjection(BEST_PARAMETERS['model_embedding_size'][0], NODE_SHUFFLE_DECODER_DIMENSION).to(device)
-
-class RMSELoss(nn.Module):
-    def __init__(self, eps=1e-6):
-        super().__init__()
-        self.mse = nn.MSELoss()
-        self.eps = eps
-        
-    def forward(self,yhat,y):
-        loss = torch.sqrt(self.mse(yhat,y) + self.eps)
-        return loss
     
 blr = 0.001
 encoder_optimizer = optim.Adam(model.parameters(), lr=blr)
-
-def concat_generators(*args):
-      for gen in args:
-          yield from gen
 
 params = concat_generators(model.parameters(),descriptor_proj.parameters(),descriptor3d_proj.parameters()
                              ,graph_descriptors_proj.parameters(),mfp2_proj.parameters(),mfp3_proj.parameters(),

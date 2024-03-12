@@ -121,6 +121,19 @@ def is_rational(mol_g):
     except Exception:
         return False
 
+class RMSELoss(nn.Module):
+    def __init__(self, eps=1e-6):
+        super().__init__()
+        self.mse = nn.MSELoss()
+        self.eps = eps
+        
+    def forward(self,yhat,y):
+        loss = torch.sqrt(self.mse(yhat,y) + self.eps)
+        return loss
+
+def concat_generators(*args):
+      for gen in args:
+          yield from gen
 def to_smiles(data: 'torch_geometric.data.Data',
               kekulize: bool = False) -> Any:
     """Converts a :class:`torch_geometric.data.Data` instance to a SMILES
