@@ -15,6 +15,7 @@ import torch_geometric
 from torch_geometric.data import Data
 import torch.nn as nn
 import os
+import shutil
 
 ATOMIC_NUMBERS =  list(range(0, 119))
 SUPPORTED_ATOMS = [element_base[i][0] for i in ATOMIC_NUMBERS]
@@ -46,6 +47,8 @@ def makeifnot(path):
 def pathjoin(p1, p2):
     return os.path.join(p1, p2)
 
+def rmif(p):
+    shutil.rmtree(p)
 def torchdump(path, obj):
     torch.save(obj, path)
 
