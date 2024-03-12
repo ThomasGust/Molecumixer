@@ -37,6 +37,7 @@ print("LOADED DATALOADER")
 
 class PretrainingPhase:
     # This object will define a pretraining phase for our model, it will take a pretraining function which will be executed each epoch this pretraining phase is called.
+    pass
 
 class ModelTrainer:
     
