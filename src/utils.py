@@ -13,6 +13,7 @@ import numpy as np
 from config import X_MAP
 import torch_geometric
 from torch_geometric.data import Data
+import torch.nn as nn
 
 ATOMIC_NUMBERS =  list(range(0, 119))
 SUPPORTED_ATOMS = [element_base[i][0] for i in ATOMIC_NUMBERS]
@@ -120,6 +121,9 @@ def is_rational(mol_g):
         return True
     except Exception:
         return False
+
+def count_params(model):
+    return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 class RMSELoss(nn.Module):
     def __init__(self, eps=1e-6):

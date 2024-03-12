@@ -70,9 +70,6 @@ shuffle_optimizer = optim.Adam(shuffle_params, lr=1e-3)
 p=3
 shuffle_scheduler = ReduceLROnPlateau(shuffle_optimizer, 'min', patience=p)
 
-def count_params(model):
-    return sum(p.numel() for p in model.parameters() if p.requires_grad)
-
 def train_one_epoch(epoch, model, train_loader, sp=None, stats_sp=None):
 
     _descriptor_losses = []
