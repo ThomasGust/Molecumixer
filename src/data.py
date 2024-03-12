@@ -185,11 +185,6 @@ def fetch_dataloader(pmol_path, bs=32, shuffle=True, sp=None, fpdtype=np.uint8):
         graph.rdkfp = rdkfp
         graph.avfp = avfp
 
-        if i % 4 == 0:
-            nodes, orientation = permute_(graph, chunks=NODE_SHUFFLE_DECODER_DIMENSION, maximum_hamming_distance=int(NODE_SHUFFLE_DECODER_DIMENSION/3.0))
-            graph.x = nodes
-            graph.orientation = orientation
-
         new_graphs.append(graph)
 
     
