@@ -30,6 +30,11 @@ cpu = torch.device("cpu")
 dataloader = torchload("data\\loaders\\sample_loader.moldata")
 print("LOADED DATALOADER")
 
+class ModelTrainer:
+    pass
+
+class LogCallback:
+    pass
 model = CGTNN(feature_size=9,
                 embedding_size=BEST_PARAMETERS['model_embedding_size'][0],
                 attention_heads=BEST_PARAMETERS['model_attention_heads'][0],
