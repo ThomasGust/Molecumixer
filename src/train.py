@@ -19,6 +19,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau, StepLR
 from torch.utils.data import DataLoader
 from plotter import load_stats
 from orientations import permute_each_nodes, permute_nodes
+from utils import pathjoin
 
 # THIS WHOLE FILE IS VERY UNORGANIZED AND NEEDS TO GET REDONE AT SOME POINT
 print("FINISHED IMPORTS")
@@ -34,10 +35,19 @@ print("LOADED DATALOADER")
 # Mark raised a good point about how we should execute different pretraining tasks at an epoch by epoch level rather than a batch by batch level.
 # We will have different pretraining "stages" which should also make the code a lot neater.
 
+class PretrainingPhase:
+    # This object will define a pretraining phase for our model, it will take a pretraining function which will be executed each epoch this pretraining phase is called.
+
 class ModelTrainer:
     
-    def __init__(self):
-        pass
+    def __init__(self, model, root_directory, phases: list[PretrainingPhase]):
+        self.model = model
+        self.root_directory = root_directory
+        self.phases = phases
+
+        # First step when initializing is to create a new environment for all the checkpoint and log files to be written to
+        
+
 
 class LogCallback:
     pass

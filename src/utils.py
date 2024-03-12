@@ -14,6 +14,7 @@ from config import X_MAP
 import torch_geometric
 from torch_geometric.data import Data
 import torch.nn as nn
+import os
 
 ATOMIC_NUMBERS =  list(range(0, 119))
 SUPPORTED_ATOMS = [element_base[i][0] for i in ATOMIC_NUMBERS]
@@ -37,6 +38,13 @@ def load(path):
     with open(path, "rb") as f:
         data = pkl.load(f)
     return data
+
+def makeifnot(path):
+    if not os.path.exists(path):
+        os.mkdir(path)
+
+def pathjoin(p1, p2):
+    return os.path.join(p1, p2)
 
 def torchdump(path, obj):
     torch.save(obj, path)
