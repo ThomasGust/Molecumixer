@@ -72,7 +72,8 @@ class ModelTrainer:
     
     def train(self):
         for phase in self.phases:
-            makeifnot(pathjoin(self.root_directory, phase.name))
+            phase_root = pathjoin(self.root_directory, phase.name)
+            makeifnot(phase_root)
         
             history = phase.phase()
             keys = history[0].keys()
@@ -86,8 +87,12 @@ class ModelTrainer:
                 plt.plot(range(len(history)), e_key)
                 plt.title(e_key)
                 plt.legend()
-                plt.savefig(f"{pathjoin(pathjoin(self.root_directory, phase.name), e_key)}.png")
+                plt.savefig(f"{pathjoin(phase_root, key)}.png")
                 plt.close()
+
+                dump(f"{pathjoin(phase_root, key)}.pkl", e_key)
+
+
     
 
 class LogCallback:
