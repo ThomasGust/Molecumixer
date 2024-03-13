@@ -197,7 +197,7 @@ def fetch_dataloader(pmol_path, bs=32, shuffle=True, sp=None, fpdtype=np.uint8):
 
 if __name__ == "__main__":
     #compute_sample()
-    
+    """
     sp = "data\\loaders\\sample_loader.moldata"
     print("FETCHING DATALOADER")
     sg_path = "data\\processed_graphs\\sample_graphs.pmol"
@@ -209,3 +209,7 @@ if __name__ == "__main__":
     permuted_nodes = permute_nodes(batch, BATCH_SIZE*5, int(BATCH_SIZE*5/2))
     nodes, orientation = permute_each_nodes(batch, 5, 2)
     print(nodes.shape, orientation)
+    """
+    mol = Chem.MolFromSmiles("Cc1cc(Nc2ncnc3ccc(NC4=NC(C)(C)CO4)cc23)ccc1Oc1ccn2ncnc2c1")
+    descriptors = calculate_descriptors(mol)
+    print(descriptors)
