@@ -38,7 +38,9 @@ print("LOADED DATALOADER")
 class PretrainingPhase:
     # This object will define a pretraining phase for our model, it will take a pretraining function which will be executed each epoch this pretraining phase is called.
     
-    def __init__(self, model, epoch_function, epochs, optimizer, training_dataset, validation_dataset, lr_scheduler):
+    def __init__(self, name, model, epoch_function, epochs, optimizer, training_dataset, validation_dataset, lr_scheduler):
+        self.name = name
+
         self.epoch_function = epoch_function
         self.epochs = epochs
         
@@ -50,11 +52,14 @@ class PretrainingPhase:
 
 
     def phase(self):
-        history = self.epoch_function(self.model, self.optimizer, self.training_dataset, self.validation_dataset, self.lr_scheduler)
-        return history
+        epochs_hist = []
+        for epoch in self.epochs:
+            history = self.epoch_function(self.model, self.optimizer, self.training_dataset, self.validation_dataset, self.lr_scheduler)
+            epochs_hist.append(history)
+        return epochs_hist
 
 class ModelTrainer:
-    
+    # Handles the plotting and log generation for the phases
     def __init__(self, model, root_directory, phases: list[PretrainingPhase]):
         self.model = model
         self.root_directory = root_directory
@@ -64,8 +69,9 @@ class ModelTrainer:
         rmif(root_directory)
         makeifnot(root_directory)
     
-    def execute_phase(self):
-        pass
+    for phase in 
+    
+    
 
 class LogCallback:
     pass
