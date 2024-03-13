@@ -6,7 +6,7 @@ from config import NODE_SHUFFLE_DECODER_DIMENSION, BEST_PARAMETERS
 from models import CGTNN, LinearProjection, GVAE
 from itertools import chain
 import os
-from utils import to_smiles, avg, is_rational, filter_inf, concat_generators
+from utils import to_smiles, avg, is_rational, filter_inf, concat_generators, makeifnot, pathjoin, rmif
 
 import numpy as np
 import torch_geometric
@@ -37,7 +37,10 @@ print("LOADED DATALOADER")
 
 class PretrainingPhase:
     # This object will define a pretraining phase for our model, it will take a pretraining function which will be executed each epoch this pretraining phase is called.
-    pass
+    
+    def __init__(self, epoch_function, epochs):
+        self.epoch_function = epoch_function
+        self.epochs = epochs
 
 class ModelTrainer:
     
@@ -46,9 +49,12 @@ class ModelTrainer:
         self.root_directory = root_directory
         self.phases = phases
 
-        # First step when initializing is to create a new environment for all the checkpoint and log files to be written to
-        
-
+        #regenerate the root directory
+        rmif(root_directory)
+        makeifnot(root_directory)
+    
+    def execute_phase(self):
+        pass
 
 class LogCallback:
     pass

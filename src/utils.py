@@ -48,7 +48,9 @@ def pathjoin(p1, p2):
     return os.path.join(p1, p2)
 
 def rmif(p):
-    shutil.rmtree(p)
+    if os.path.exists(p):
+        shutil.rmtree(p)
+
 def torchdump(path, obj):
     torch.save(obj, path)
 
