@@ -26,8 +26,8 @@ import numpy as np
 from orientations import permute_edges, permute_nodes, get_orientation_vector, permute_each_nodes
 
 def calculate_descriptors(mol):
-    o = list(Descriptors.CalcMolDescriptors(mol).values())
-    return o
+    #o = list(Descriptors.CalcMolDescriptors(mol).values())
+    return list(Descriptors.CalcMolDescriptors(mol))
 
 def calculate_graph_descriptors(mol):
     balabanJ = GraphDescriptors.BalabanJ(mol)
