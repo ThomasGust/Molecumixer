@@ -72,7 +72,7 @@ class ModelTrainer:
     
     def train(self):
         for phase in self.phases:
-            phase_root = pathjoin(self.root_directory, phase.name)
+            phase_root = pathjoin(self.root_directory, phase.name) # TODO Eventually I will want it to be like [{'Accuracies': {'Training Accuracy':training_accuracy}}] but for now the dict is just one level.
             makeifnot(phase_root)
         
             history = phase.phase()
