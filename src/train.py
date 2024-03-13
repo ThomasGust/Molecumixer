@@ -8,6 +8,7 @@ from itertools import chain
 import os
 from utils import to_smiles, avg, is_rational, filter_inf, concat_generators, makeifnot, pathjoin, rmif
 
+import matplotlib.pyplot as plt
 import numpy as np
 import torch_geometric
 import torch.nn.functional as F
@@ -60,8 +61,8 @@ class PretrainingPhase:
 
 class ModelTrainer:
     # Handles the plotting and log generation for the phases
-    def __init__(self, model, root_directory, phases: list[PretrainingPhase]):
-        self.model = model
+    def __init__(self, root_directory, phases: list[PretrainingPhase]):
+        #self.model = model
         self.root_directory = root_directory
         self.phases = phases
 
@@ -69,8 +70,24 @@ class ModelTrainer:
         rmif(root_directory)
         makeifnot(root_directory)
     
-    for phase in 
-    
+    def train(self):
+        for phase in self.phases:
+            makeifnot(pathjoin(self.root_directory, phase.name))
+        
+            history = phase.phase()
+            keys = history[0].keys()
+
+            for key in keys:
+                e_key = []
+
+                for epoch in history:
+                    e_key.append(epoch[key])
+                
+                plt.plot(range(len(history)), e_key)
+                plt.title(e_key)
+                plt.legend()
+                plt.savefig(f"{pathjoin(pathjoin(self.root_directory, phase.name), e_key)}.png")
+                plt.close()
     
 
 class LogCallback:
