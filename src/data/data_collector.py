@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     x = []
     ls = len(list(culled['Smiles']))
-    for smiles in tqdm(enumerate(list(culled['Smiles']))):
+    for smiles in tqdm(list(culled['Smiles'])):
         try:
             smiles = Chem.MolFromSmiles(smiles)
             maccs = np.frombuffer(MACCSkeys.GenMACCSKeys(smiles).ToBitString().encode(), 'u1') - ord('0')
