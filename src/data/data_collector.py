@@ -1,6 +1,5 @@
 import pandas as pd
 from rdkit import Chem
-from rdkit.Chem.Draw import MolToImage, MolToImageFile, MolToFile, MolsToImage, MolsToGridImage, _moltoimg, _moltoSVG, _legacyMolToFile, _legacyMolToImage
 from rdkit.Chem import MACCSkeys
 import PIL
 import time
@@ -9,50 +8,6 @@ import numpy as np
 from sklearn.cluster import KMeans
 import pickle as pkl
 import time
-
-def generate():
-    compounds = pd.read_csv("data\\raw\\chembl_compounds.csv", on_bad_lines='warn', sep=";")
-    print(len(compounds))
-
-    culled_compounds = compounds[["ChEMBL ID","Smiles"]]
-    culled_compounds = culled_compounds.dropna()
-    for i, smiles in enumerate(culled_compounds['Smiles']):
-        
-        try:
-            mol = Chem.MolFromSmiles(smiles)
-            img = _legacyMolToImage(mol, size=(224, 224), wedgeBonds=True, fitImage=True, options=None, canvas=None,kekulize=False)
-            img.save(f"data\\images\\CHEMBL_COMPOUND{i}.png")
-            if i % 1000 == 0:
-                print(f"{i}/{len(culled_compounds)}:{i/len(culled_compounds)*100}%")
-        except Exception as e:
-            print(e)
-            print(smiles)
-
-def new_generate():
-    compounds = pd.read_csv("data\\raw\\chembl_compounds.csv", on_bad_lines='warn', sep=';')
-    print(compounds.head())
-    culled = compounds[['ChEMBL ID', "Smiles"]].dropna()
-    print(len(culled))
-    #lc = len(culled)
-    smiles = list(culled['Smiles'])
-    print(smiles[:5])
-    lc = len(smiles)
-    split_size = 100
-    smiles_chunks = [smiles[x:x+split_size] for x in range(0, len(smiles), split_size)]
-    
-    ns = 1333
-
-    smiles_chunks = smiles_chunks[ns:]
-
-    for i, smiles_chunk in enumerate(smiles_chunks):
-        for ii, molecule in enumerate(smiles_chunk):
-            v = i*split_size+ii+ns*split_size
-            mol = Chem.MolFromSmiles(molecule, sanitize=False)
-            img = _legacyMolToImage(mol, size=(224, 224), wedgeBonds=True, fitImage=True, options=None, canvas=None,kekulize=False)
-            img.save(f"data\\images\\CHEMBL_COMPOUND{v}.png")
-        print(f"{v/lc*100}%")
-        time.sleep(0.1)
-
 
 def get_maccs_keys(smiles_string):
     mol = Chem.MolFromSmiles(smiles_string)
