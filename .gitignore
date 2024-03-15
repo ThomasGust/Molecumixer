@@ -139,7 +139,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-data/
+Molecumixerdata/
 
 # pytype static type analyzer
 .pytype/
