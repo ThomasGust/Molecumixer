@@ -139,7 +139,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-Molecumixerdata/
 
 # pytype static type analyzer
 .pytype/
@@ -148,7 +147,7 @@ Molecumixerdata/
 cython_debug/
 
 data_dir/
-data/
+/data
 checkpoints/
 # PyCharm
 #  JetBrains specific template is maintainted in a separate JetBrains.gitignore that can
