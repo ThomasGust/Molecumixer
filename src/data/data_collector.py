@@ -8,6 +8,7 @@ import numpy as np
 from sklearn.cluster import KMeans
 import pickle as pkl
 import time
+from tqdm import tqdm
 
 def get_maccs_keys(smiles_string):
     mol = Chem.MolFromSmiles(smiles_string)
@@ -33,16 +34,14 @@ if __name__ == "__main__":
 
     x = []
     ls = len(list(culled['Smiles']))
-    for i, smiles in enumerate(list(culled['Smiles'])):
+    for smiles in tqdm(enumerate(list(culled['Smiles']))):
         try:
             smiles = Chem.MolFromSmiles(smiles)
             maccs = np.frombuffer(MACCSkeys.GenMACCSKeys(smiles).ToBitString().encode(), 'u1') - ord('0')
             x.append(list(maccs))
 
-            if i % 10_000 == 0:
-                print(f"{i}/{ls}: {i/ls*100}")
-        except Exception as e:
-            print(e, i)
+        except Exception:
+            pass
 
     v = 0
 
