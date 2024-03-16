@@ -23,7 +23,7 @@ from config import X_MAP as x_map
 from config import E_MAP as e_map
 from config import NODE_SHUFFLE_DECODER_DIMENSION
 
-from stopit import threading_timeoutable as timeoutable
+#from stopit import threading_timeoutable as timeoutable
 import numpy as np
 
 from orientations import permute_edges, permute_nodes, get_orientation_vector, permute_each_nodes
@@ -95,7 +95,7 @@ def row_normalize_array(a):
     a /= avgs
     return a
 
-@timeoutable()
+#@timeoutable()
 def calculate(smiles):
     mol = Chem.MolFromSmiles(smiles)
     mol = Chem.AddHs(mol)
