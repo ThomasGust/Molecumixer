@@ -1,1 +1,1 @@
-from tasks.task import Task
+from tasks.common import Task
