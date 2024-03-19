@@ -6,7 +6,7 @@ def rmse(inputs, targets):
     return torch.sqrt(F.mse_loss(inputs, targets))
 
 class DescriptorGenerator:
-    """This object handles the generation of molecular descriptors"""
+    """This is a utility module to help us generate molecular"""
 
 class DescriptorPredictionModel:
     """This module will predict the molecular descriptors of a given molecule given a latent vector from an encoder"""
