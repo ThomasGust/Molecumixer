@@ -56,7 +56,6 @@ class DescriptorPredictionModel:
         dgloss = rmse(dgpred, dg)/self.output_dims[2]
 
         return dloss+d3loss+dgloss
-
-
-
-
+    
+if __name__ == "__main__":
+    descriptor_pred_model = DescriptorPredictionModel(512, 1024, [209, 9, 19])
