@@ -3,6 +3,8 @@ import torch
 import math
 import numpy as np
 import random
+import torch.nn as nn
+import torch.nn.functional as F
 
 def compute_hamming_distance(v):
     """This function computes the hamming distance between a permutation vector and the base permutation
@@ -95,5 +97,38 @@ class NodeShuffler:
         return permuted_matrix
 
 
-class ShufflingModel:
+class ShufflingModel(nn.Module):
     """Given an encoder, this model predicts how a graph was shuffled/permuted"""
+
+    def __init__(self, encoder_dim, hidden_dim, chunks, activation = F.relu):
+        super().__init__()
+
+        self.chunks = chunks
+        self.encoder_dim = encoder_dim
+        self.hidden_dim = hidden_dim
+        self.output_dim = self.chunks^2
+
+        self.activation = activation
+
+        self.l1 = nn.Linear(self.encoder_dim, self.hidden_dim)
+        self.o = nn.Linear(self.hidden_dim, self.output_dim) # This head generates the entire sequence at once
+    
+    def forward(self, x):
+        x = self.l1(x)
+        x = self.activation(x)
+        
+        x = self.o(x)
+
+        x = torch.reshape(x, (self.output_dim, self.output_dim))
+        return x # No activation is applied to the last layer
+
+    def get_loss(self, labels, logits):
+        logits = logits.view(-1, self.chunks)
+        labels = labels.view(-1)
+
+        cel = nn.CrossEntropyLoss()
+        loss = cel(logits, labels)
+
+        return loss
+
+        
