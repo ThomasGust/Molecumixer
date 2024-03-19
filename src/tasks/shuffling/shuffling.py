@@ -123,6 +123,10 @@ class ShufflingModel(nn.Module):
         return x # No activation is applied to the last layer
 
     def get_loss(self, labels, logits):
+        """
+        Computes the loss of our model based off of the output of forward [batch_size, chunks, chunks]
+        and labels of shape [batch_size, chunks]
+        """
         logits = logits.view(-1, self.chunks)
         labels = labels.view(-1)
 
