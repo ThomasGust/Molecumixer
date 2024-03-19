@@ -29,12 +29,22 @@ def split_tensor(t, batch_index):
     return split_tensors
 
 class NodeShuffler:
-
+    """
+    This object handles all of the logic for shuffling nodes.
+    Using a NodeShuffler, if we have a node matrix with a shape (NUM_ATOMS, NUM_ATTRIBUTES)
+    we can reshuffle it into a matrix of the same shape where chunks of the matrix have been moved around a little bit.
+    We generate a vector, something like [1, 0, 3, 2] a given max hamming distance away from [0, 1, 2, 3] and use that to shuffle the matrix.
+    As an example, with the above shuffling vector [0, 1, 2, 3, 4, 5, 6, 7] would become [2, 3, 0, 1, 6, 7, 3, 4]. The same idea is applied to our graphs,
+    except we take into account another dimension to handle the different node level attributes.
+    """
     def __init__(self, chunks, maximum_hamming_distance):
         self.chunks = chunks
         self.maximum_hamming_distance = maximum_hamming_distance
     
     def get_orientation_vector(self):
+        """
+        Computes a pseudorandom shuffling vector using the number of chunks and maximum hamming distance defined in our constructor.
+        """
         base_vector = list(range(self.chunks))
         permuted_vector = base_vector.copy()
         
@@ -51,8 +61,12 @@ class NodeShuffler:
                 
         return permuted_vector
 
-    def permute_nodes(self, graph, chunks, maximum_hamming_distance):
-        orientation_vector = self.get_orientation_vector(chunks, maximum_hamming_distance)
+    def permute_nodes(self, graph):
+        """
+        Main function for this object, given a graph, it will generate an orientation vector,
+        shuffle the original graphs node matrix, and return both our new node matrix, and the shuffle vector used to generate it.
+        """
+        orientation_vector = self.get_orientation_vector(self.chunks, self.maximum_hamming_distance)
         node_matrix = graph.x
         permuted_matrix = self.shuffle_node_matrix(node_matrix, orientation_vector)
         x = {"x":torch.tensor(permuted_matrix), "orientation":orientation_vector}
@@ -61,6 +75,9 @@ class NodeShuffler:
 
 
     def shuffle_node_matrix(self, matrix, new_orientation):
+        """
+        This function handles the actual shuffling of a node matrix based off of an orientation vector.
+        """
         n, m = matrix.shape
         num_chunks = len(new_orientation)
         
@@ -76,14 +93,6 @@ class NodeShuffler:
             permuted_matrix[new_row_start:new_row_start+current_chunk_height, :] = matrix[original_row_start:original_row_start+current_chunk_height, :]
 
         return permuted_matrix
-
-    def permute_nodes(self, graph, chunks, maximum_hamming_distance):
-        orientation_vector = self.get_orientation_vector(chunks, maximum_hamming_distance)
-        node_matrix = graph.x
-        permuted_matrix = self.shuffle_node_matrix(node_matrix, orientation_vector)
-        x = {"x":torch.tensor(permuted_matrix), "orientation":orientation_vector}
-
-        return x
 
 
 class ShufflingModel:
