@@ -26,7 +26,6 @@ from config import NODE_SHUFFLE_DECODER_DIMENSION
 
 import numpy as np
 
-
 class DescriptorCalculator:
     """This object will be responsible for calculating all of our different molecular descriptors"""
 
@@ -34,11 +33,11 @@ class DescriptorCalculator:
         """
         include g3 will include 'non normal' descriptors in the final calculation 
         """
+
+    def calculate_rdmol_descriptors(self, mol):
+        return Descriptors.CalcMolDescriptors(mol)
     
-    def calculate_rdmol_descriptors(mol):
-        return Descriptors.CalcMolDescriptors
-    
-    def calculate_graph_descriptors(mol):
+    def calculate_graph_descriptors(self, mol):
         balabanJ = GraphDescriptors.BalabanJ(mol)
         bertzCT = GraphDescriptors.BertzCT(mol)
         
@@ -65,7 +64,7 @@ class DescriptorCalculator:
         o = [balabanJ,bertzCT,chi0,chi1,chi0v,chi1v,chi2v,chi3v,chi4v,chi0n,chi1n,chi2n,chi3n,chi4n,hka,ipc,k1,k2,k3]
         return o
 
-    def calculate_3d_descriptors(mol):
+    def calculate_3d_descriptors(self, mol):
         AllChem.EmbedMolecule(mol)
 
         asphericity = Descriptors3D.Asphericity(mol)
@@ -85,6 +84,17 @@ class DescriptorCalculator:
         o = [asphericity, eccentricity, isf, npr1, npr2, pmi1, pmi2, pmi3, rg]
         return o
 
+    def calculate_descriptors(self, smiles):
+        mol = Chem.MolFromSmiles(smiles)
+        mol = Chem.AddHs(mol)
+
+        rddescriptors = self.calculate_rdmol_descriptors(mol)
+        descriptors_3d = self.calculate_3d_descriptors(mol)
+        graph_descriptors = self.calculate_graph_descriptors(mol)
+
+        descriptors = {"rd": rddescriptors, "3d":descriptors_3d, "graph":graph_descriptors}
+        return descriptors
+
 def calculate_fingerprints(mol):
     mfp2 = AllChem.GetMorganFingerprintAsBitVect(mol, 2)
     mfp3 = AllChem.GetMorganFingerprintAsBitVect(mol, 3)
@@ -96,11 +106,6 @@ def calculate_fingerprints(mol):
 
     return [mfp2, mfp3, maccs, rdkfp, avfp]
 
-def row_normalize_array(a):
-    a = np.clip(a, a_min=-1000, a_max=1000)
-    avgs = np.mean(a, axis=1)[:,np.newaxis]
-    a /= avgs
-    return a
 
 #@timeoutable()
 def calculate(smiles):
