@@ -23,11 +23,9 @@ from config import X_MAP as x_map
 from config import E_MAP as e_map
 from config import NODE_SHUFFLE_DECODER_DIMENSION
 
-#from stopit import threading_timeoutable as timeoutable
 import numpy as np
 
 def calculate_descriptors(mol):
-    #o = list(Descriptors.CalcMolDescriptors(mol).values())
     return Descriptors.CalcMolDescriptors(mol)
 
 def calculate_graph_descriptors(mol):
