@@ -95,30 +95,54 @@ class DescriptorCalculator:
         descriptors = {"rd": rddescriptors, "3d":descriptors_3d, "graph":graph_descriptors}
         return descriptors
 
-def calculate_fingerprints(mol):
-    mfp2 = AllChem.GetMorganFingerprintAsBitVect(mol, 2)
-    mfp3 = AllChem.GetMorganFingerprintAsBitVect(mol, 3)
 
-    maccs = MACCSkeys.GenMACCSKeys(mol)
-    rdkfp = RDKFingerprint(mol)
+class FingerprintCalculator:
+    """
+    This object is similar to our DescriptorCalculator, it will compute molecular fingerprints given any molecule
+    """
 
-    avfp = avalon.GetAvalonFP(mol)
+    def __init__(self, fps=["mfp2", "mfp3", "maccs", "rdkfp", "avfp"]):
+        self.fps = fps
 
-    return [mfp2, mfp3, maccs, rdkfp, avfp]
+        self.fp_d = {"mfp2":lambda mol: self.calculate_mfp(mol, 2),
+                     "mfp3":lambda mol: self.calculate_mfp(mol, 3),
+                     "maccs":lambda mol: self.calculate_maccs(mol),
+                     "rdkfp":lambda mol: self.calculate_rdkfp(mol),
+                     "avfp":lambda mol: self.calculate_avfp(mol)}
+    @staticmethod
+    def fp2np(fp):
+        """Converts an rdkit fingerprint bit vector into a numpy array"""
+        return np.frombuffer(fp.ToBitString().encode(), 'u1') - ord('0') 
 
+    def calculate_mfp(self, mol, r):
+        mfp = AllChem.GetMorganFingerprintAsBitVect(mol, r)
+        return self.fp2np(mfp)
+    
+    def calculate_maccs(self, mol):
+        maccs = MACCSkeys.GenMACCSKeys(mol)
+        return self.fp2np(maccs)
+    
+    def calculate_rdkfp(self, mol):
+        rdkfp = RDKFingerprint(mol)
+        return self.fp2np(rdkfp)
+    
+    def calculate_avfp(self, mol):
+        avfp = avalon.GetAvalonFP(mol)
+        return self.fp2np(avfp)
+    
+    def calculate_fingerprints(self, smiles):
+        #TODO I should add support for both a mol and a pre-embedded RdKit Molecule
+        o_d = {}
+        mol = Chem.MolFromSmiles(smiles)
+        mol = Chem.AddHs(mol)
 
-#@timeoutable()
-def calculate(smiles):
-    mol = Chem.MolFromSmiles(smiles)
-    mol = Chem.AddHs(mol)
+        for fp_type in self.fps:
+            computer = self.fp_d[fp_type]
+            fp = computer(mol)
 
-    descriptors = np.array(calculate_descriptors(mol))
-    descriptors3d = np.array(calculate_3d_descriptors(mol))
-    graph_descriptors = np.array(calculate_graph_descriptors(mol))
-    fingerprints = [np.frombuffer(fingerprint.ToBitString().encode(), 'u1') - ord('0') for fingerprint in calculate_fingerprints(mol)]
-
-    return descriptors, descriptors3d, graph_descriptors, fingerprints
-    #return descriptors3d
+            o_d[fp_type] = fp
+        
+        return o_d
 
 def compute_sample():
     """
@@ -211,20 +235,4 @@ def fetch_dataloader(pmol_path, bs=32, shuffle=True, sp=None, fpdtype=np.uint8):
     return dataloader
 
 if __name__ == "__main__":
-    #compute_sample()
-    """
-    sp = "data\\loaders\\sample_loader.moldata"
-    print("FETCHING DATALOADER")
-    sg_path = "data\\processed_graphs\\sample_graphs.pmol"
-    data_loader = fetch_dataloader(sg_path, sp=sp)
-    
-    #There is still some more work to be done on getting the orientation functions to work properly
-    BATCH_SIZE = 32
-    batch = next(iter(data_loader))
-    permuted_nodes = permute_nodes(batch, BATCH_SIZE*5, int(BATCH_SIZE*5/2))
-    nodes, orientation = permute_each_nodes(batch, 5, 2)
-    print(nodes.shape, orientation)
-    """
     mol = Chem.MolFromSmiles("Cc1cc(Nc2ncnc3ccc(NC4=NC(C)(C)CO4)cc23)ccc1Oc1ccn2ncnc2c1")
-    descriptors = calculate_descriptors(mol)
-    print(descriptors)
