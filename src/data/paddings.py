@@ -34,3 +34,6 @@ class GraphPadding:
     def compute_mask(self, t):
         """This function computes a mask for where a tensor equals the padding token"""
         return t != self.padding_token
+
+if __name__ == "__main__":
+    pass
