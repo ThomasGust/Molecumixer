@@ -32,69 +32,6 @@ cpu = torch.device("cpu")
 dataloader = torchload("data\\loaders\\sample_loader.moldata")
 print("LOADED DATALOADER")
 
-
-# Mark raised a good point about how we should execute different pretraining tasks at an epoch by epoch level rather than a batch by batch level.
-# We will have different pretraining "stages" which should also make the code a lot neater.
-
-class PretrainingPhase:
-    # This object will define a pretraining phase for our model, it will take a pretraining function which will be executed each epoch this pretraining phase is called.
-    
-    def __init__(self, name, model, epoch_function, epochs, optimizer, training_dataset, validation_dataset, lr_scheduler):
-        self.name = name
-
-        self.epoch_function = epoch_function
-        self.epochs = epochs
-        
-        self.model = model
-        self.optimizer = optimizer
-        self.training_dataset = training_dataset
-        self.validation_dataset = validation_dataset
-        self.lr_scheduler = lr_scheduler
-
-
-    def phase(self):
-        epochs_hist = []
-        for epoch in self.epochs:
-            history = self.epoch_function(self.model, self.optimizer, self.training_dataset, self.validation_dataset, self.lr_scheduler)
-            epochs_hist.append(history)
-        return epochs_hist
-
-class ModelTrainer:
-    # Handles the plotting and log generation for the phases
-    def __init__(self, root_directory, phases: list[PretrainingPhase]):
-        #self.model = model
-        self.root_directory = root_directory
-        self.phases = phases
-
-        #regenerate the root directory
-        rmif(root_directory)
-        makeifnot(root_directory)
-    
-    def train(self):
-        for phase in self.phases:
-            phase_root = pathjoin(self.root_directory, phase.name) # TODO Eventually I will want it to be like [{'Accuracies': {'Training Accuracy':training_accuracy}}] but for now the dict is just one level.
-            makeifnot(phase_root)
-        
-            history = phase.phase()
-            keys = history[0].keys()
-
-            for key in keys:
-                e_key = []
-
-                for epoch in history:
-                    e_key.append(epoch[key])
-                
-                plt.plot(range(len(history)), e_key)
-                plt.title(e_key)
-                plt.legend()
-                plt.savefig(f"{pathjoin(phase_root, key)}.png")
-                plt.close()
-
-                dump(f"{pathjoin(phase_root, key)}.pkl", e_key)
-
-
-    
-
 class LogCallback:
     pass
 

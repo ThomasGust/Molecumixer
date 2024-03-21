@@ -36,4 +36,4 @@ class GraphPadding:
         return t != self.padding_token
 
 if __name__ == "__main__":
-    pass
+    padder = GraphPadding(None, None, None)

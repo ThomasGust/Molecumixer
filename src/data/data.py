@@ -1,5 +1,5 @@
 #TODO
-#THIS FILE IS IN DESPERATE NEED OF REFACTORING
+#Refactor this file into something more object oriented and easier to understand
 
 import numpy as np
 import pandas as pd
@@ -25,8 +25,6 @@ from config import NODE_SHUFFLE_DECODER_DIMENSION
 
 #from stopit import threading_timeoutable as timeoutable
 import numpy as np
-
-from orientations import permute_edges, permute_nodes, get_orientation_vector, permute_each_nodes
 
 def calculate_descriptors(mol):
     #o = list(Descriptors.CalcMolDescriptors(mol).values())
