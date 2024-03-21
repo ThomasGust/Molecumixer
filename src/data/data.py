@@ -8,9 +8,6 @@ from tqdm import tqdm
 from utils import load, dump, torchdump#, timeout
 
 from torch_geometric.loader import DataLoader
-from torch_geometric.data import Data
-import torch_geometric
-
 import numpy as np
 
 # TODO, NOW THAT THE CALCULATORS HAVE BEEN REFACTORED, I NEED TO FIND A SOLUTION FOR THE CODE BELOW
