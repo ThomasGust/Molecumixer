@@ -20,59 +20,70 @@ from torch_geometric.loader import DataLoader
 from torch_geometric.data import Data
 import torch_geometric
 from config import X_MAP as x_map
+
 from config import E_MAP as e_map
 from config import NODE_SHUFFLE_DECODER_DIMENSION
 
 import numpy as np
 
-def calculate_descriptors(mol):
-    return Descriptors.CalcMolDescriptors(mol)
 
-def calculate_graph_descriptors(mol):
-    balabanJ = GraphDescriptors.BalabanJ(mol)
-    bertzCT = GraphDescriptors.BertzCT(mol)
+class DescriptorCalculator:
+    """This object will be responsible for calculating all of our different molecular descriptors"""
+
+    def __init__(self, include_g3=True):
+        """
+        include g3 will include 'non normal' descriptors in the final calculation 
+        """
     
-    chi0 = GraphDescriptors.Chi0(mol)
-    chi1 = GraphDescriptors.Chi1(mol)
-    chi0v = GraphDescriptors.Chi0v(mol)
-    chi1v = GraphDescriptors.Chi1v(mol)
-    chi2v = GraphDescriptors.Chi2v(mol)
-    chi3v = GraphDescriptors.Chi3v(mol)
-    chi4v = GraphDescriptors.Chi4v(mol)
-    chi0n = GraphDescriptors.Chi0n(mol)
-    chi1n = GraphDescriptors.Chi1n(mol)
-    chi2n = GraphDescriptors.Chi2n(mol)
-    chi3n = GraphDescriptors.Chi3n(mol)
-    chi4n = GraphDescriptors.Chi4n(mol)
+    def calculate_rdmol_descriptors(mol):
+        return Descriptors.CalcMolDescriptors
+    
+    def calculate_graph_descriptors(mol):
+        balabanJ = GraphDescriptors.BalabanJ(mol)
+        bertzCT = GraphDescriptors.BertzCT(mol)
+        
+        chi0 = GraphDescriptors.Chi0(mol)
+        chi1 = GraphDescriptors.Chi1(mol)
+        chi0v = GraphDescriptors.Chi0v(mol)
+        chi1v = GraphDescriptors.Chi1v(mol)
+        chi2v = GraphDescriptors.Chi2v(mol)
+        chi3v = GraphDescriptors.Chi3v(mol)
+        chi4v = GraphDescriptors.Chi4v(mol)
+        chi0n = GraphDescriptors.Chi0n(mol)
+        chi1n = GraphDescriptors.Chi1n(mol)
+        chi2n = GraphDescriptors.Chi2n(mol)
+        chi3n = GraphDescriptors.Chi3n(mol)
+        chi4n = GraphDescriptors.Chi4n(mol)
 
-    hka = GraphDescriptors.HallKierAlpha(mol)
-    ipc = GraphDescriptors.Ipc(mol)
+        hka = GraphDescriptors.HallKierAlpha(mol)
+        ipc = GraphDescriptors.Ipc(mol)
 
-    k1 = GraphDescriptors.Kappa1(mol)
-    k2 = GraphDescriptors.Kappa2(mol)
-    k3 = GraphDescriptors.Kappa3(mol)
+        k1 = GraphDescriptors.Kappa1(mol)
+        k2 = GraphDescriptors.Kappa2(mol)
+        k3 = GraphDescriptors.Kappa3(mol)
 
-    o = [balabanJ,bertzCT,chi0,chi1,chi0v,chi1v,chi2v,chi3v,chi4v,chi0n,chi1n,chi2n,chi3n,chi4n,hka,ipc,k1,k2,k3]
-    return o
-def calculate_3d_descriptors(mol):
-    AllChem.EmbedMolecule(mol)
+        o = [balabanJ,bertzCT,chi0,chi1,chi0v,chi1v,chi2v,chi3v,chi4v,chi0n,chi1n,chi2n,chi3n,chi4n,hka,ipc,k1,k2,k3]
+        return o
 
-    asphericity = Descriptors3D.Asphericity(mol)
-    eccentricity = Descriptors3D.Eccentricity(mol)
-    isf = Descriptors3D.InertialShapeFactor(mol)
+    def calculate_3d_descriptors(mol):
+        AllChem.EmbedMolecule(mol)
 
-    npr1 = Descriptors3D.NPR1(mol)
-    npr2 = Descriptors3D.NPR2(mol)
+        asphericity = Descriptors3D.Asphericity(mol)
+        eccentricity = Descriptors3D.Eccentricity(mol)
+        isf = Descriptors3D.InertialShapeFactor(mol)
 
-    pmi1 = Descriptors3D.PMI1(mol)
-    pmi2 = Descriptors3D.PMI2(mol)
-    pmi3 = Descriptors3D.PMI3(mol)
+        npr1 = Descriptors3D.NPR1(mol)
+        npr2 = Descriptors3D.NPR2(mol)
+
+        pmi1 = Descriptors3D.PMI1(mol)
+        pmi2 = Descriptors3D.PMI2(mol)
+        pmi3 = Descriptors3D.PMI3(mol)
 
 
-    rg = Descriptors3D.RadiusOfGyration(mol)
+        rg = Descriptors3D.RadiusOfGyration(mol)
 
-    o = [asphericity, eccentricity, isf, npr1, npr2, pmi1, pmi2, pmi3, rg]
-    return o
+        o = [asphericity, eccentricity, isf, npr1, npr2, pmi1, pmi2, pmi3, rg]
+        return o
 
 def calculate_fingerprints(mol):
     mfp2 = AllChem.GetMorganFingerprintAsBitVect(mol, 2)
