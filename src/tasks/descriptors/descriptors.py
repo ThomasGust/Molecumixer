@@ -15,6 +15,7 @@ class DescriptorCalculator:
         """
         include g3 will include 'non normal' descriptors in the final calculation 
         """
+        self.include_g3 = include_g3
 
     def calculate_rdmol_descriptors(self, mol):
         return Descriptors.CalcMolDescriptors(mol)
@@ -71,10 +72,14 @@ class DescriptorCalculator:
         mol = Chem.AddHs(mol)
 
         rddescriptors = self.calculate_rdmol_descriptors(mol)
-        descriptors_3d = self.calculate_3d_descriptors(mol)
-        graph_descriptors = self.calculate_graph_descriptors(mol)
+        if self.include_g3:
+            descriptors_3d = self.calculate_3d_descriptors(mol)
+            graph_descriptors = self.calculate_graph_descriptors(mol)
 
-        descriptors = {"rd": rddescriptors, "3d":descriptors_3d, "graph":graph_descriptors}
+            descriptors = {"rd": rddescriptors, "3d":descriptors_3d, "graph":graph_descriptors}
+        else:
+            descriptors = {"rd": rddescriptors}
+    
         return descriptors
 
 class DescriptorPredictionModel:
