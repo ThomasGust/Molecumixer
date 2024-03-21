@@ -104,4 +104,5 @@ def fetch_dataloader(pmol_path, bs=32, shuffle=True, sp=None, fpdtype=np.uint8):
     return dataloader
 
 if __name__ == "__main__":
-    mol = Chem.MolFromSmiles("Cc1cc(Nc2ncnc3ccc(NC4=NC(C)(C)CO4)cc23)ccc1Oc1ccn2ncnc2c1")
+    pass
+    #mol = Chem.MolFromSmiles("Cc1cc(Nc2ncnc3ccc(NC4=NC(C)(C)CO4)cc23)ccc1Oc1ccn2ncnc2c1")
