@@ -144,6 +144,9 @@ class FingerprintCalculator:
         
         return o_d
 
+# TODO, NOW THAT THE ABOVE HAS BEEN REFACTORED, I NEED TO FIND A SOLUTION FOR THE CODE BELOW
+# AS AN ARCHITECTURE CHOICE, IT MIGHT ACTUALLY BE BETTER TO COMPUTE ANY PRE-TRAINING TARGETS ON THE FLY AND NOT STORE THEM IN A DATALOADER
+# FOR NOW, ANY OF THE CODE BENEATH WILL BE BROKEN
 def compute_sample():
     """
     As of right now, this function is super inefficient and really needs to be optimized. Right now,

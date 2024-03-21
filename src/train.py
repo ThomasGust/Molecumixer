@@ -1,3 +1,6 @@
+# TODO THIS IS THE LAST BIG FILE THAT STILL NEEDS TO BE REFACTORED
+# THE CURRENT ARCHITECTURE FOR TRAINING IS PROBABLY NOT THE BEST AND IT MIGHT BE A GOOD IDEA TO COMPUTE PRETRAINING TARGETS ON THE FLY INSTEAD OF SAVING THEM IN A DATALOADER   
+
 import sys
 sys.path.append('C:\\Users\\Thomas\\OneDrive\\Apps\\Documents\\GitHub\\Molecumixer\\src')
 from utils import (torchload, dump, load, torchdump)
