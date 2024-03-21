@@ -2,27 +2,14 @@
 #Refactor this file into something more object oriented and easier to understand
 
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 from sklearn.preprocessing import normalize
 
 from tqdm import tqdm
-from typing import Any
-
-from rdkit import Chem, RDLogger
-from rdkit.Chem import Descriptors, AllChem, MACCSkeys, rdMolDescriptors, RDKFingerprint, Descriptors3D, GraphDescriptors, DataStructs
-from rdkit.Avalon import pyAvalonTools as avalon
-from utils import load, dump, torchload, torchdump#, timeout
-import torch
-import math
+from utils import load, dump, torchdump#, timeout
 
 from torch_geometric.loader import DataLoader
 from torch_geometric.data import Data
 import torch_geometric
-from config import X_MAP as x_map
-
-from config import E_MAP as e_map
-from config import NODE_SHUFFLE_DECODER_DIMENSION
 
 import numpy as np
 
