@@ -177,6 +177,7 @@ class GVAE(nn.Module):
 
         node_logits, edge_index_logits, edge_attr_logits = self.decode_graph(z, batch_dim)
 
-        return node_logits, edge_index_logits, edge_attr_logits, mu, logvar   
+        return node_logits, edge_index_logits, edge_attr_logits, mu, logvar
+ 
 class GraphDiscriminator:
     """Given an encoder model, this object will try to predict whether or not a molecular graph is real or generated through GVAE"""

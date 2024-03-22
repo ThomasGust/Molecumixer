@@ -1,0 +1,1 @@
+from tasks.fingerprints.fingerprints import FingerprintCalculator, FingerprintPredictionModel
