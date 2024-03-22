@@ -1,3 +1,5 @@
+from tasks import Task
+
 import numpy as np
 import torch
 import math
@@ -135,4 +137,8 @@ class ShufflingModel(nn.Module):
 
         return loss
 
-        
+class ShufflingPredictionTask(Task):
+    """Implements the shuffling prediction pretraining task"""
+    
+    def __init__(self):
+        super().__init__()

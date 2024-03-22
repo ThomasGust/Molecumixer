@@ -1,3 +1,5 @@
+from tasks import Task
+
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
@@ -130,6 +132,12 @@ class DescriptorPredictionModel:
         dgloss = rmse(dgpred, dg)/self.output_dims[2]
 
         return dloss+d3loss+dgloss
+
+class DescriptorPredictionTask(Task):
+    "Implements the pre training task of molecular descriptor prediction"
+
+    def __init__(self):
+        super().__init__()
     
 if __name__ == "__main__":
     descriptor_pred_model = DescriptorPredictionModel(512, 1024, [209, 9, 19])

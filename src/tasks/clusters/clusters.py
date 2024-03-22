@@ -1,3 +1,4 @@
+from tasks import Task
 import faiss
 
 class Clusterer:
@@ -7,3 +8,9 @@ class Clusterer:
 
 class ClusterPredictionModel:
     """Given a latent vector from an encoder, this module will predict pseudolabel clusters"""
+
+class ClusterPredictionTask(Task):
+    """Implements the cluster prediction training task"""
+
+    def __init__(self):
+        super().__init__()

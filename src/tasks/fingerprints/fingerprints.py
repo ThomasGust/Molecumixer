@@ -1,3 +1,5 @@
+from tasks import Task
+
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
@@ -92,3 +94,9 @@ class FingerprintPredictionModel:
             l /= dim
         
         return sum(losses)
+
+class FingerprintPredictionTask(Task):
+    """Implements the pre-training task for molecular fingerprint prediction"""
+
+    def __init__(self):
+        super().__init__()
