@@ -1,1 +1,1 @@
-from tasks.reconstruction.reconstruction import GVAE, GraphDiscriminator
+from tasks.reconstruction.reconstruction import GVAE, GraphDiscriminator, GraphReconstructionTask

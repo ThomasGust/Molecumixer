@@ -1,1 +1,1 @@
-from tasks.fingerprints.fingerprints import FingerprintCalculator, FingerprintPredictionModel
+from tasks.fingerprints.fingerprints import FingerprintCalculator, FingerprintPredictionModel, FingerprintPredictionTask

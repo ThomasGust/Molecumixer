@@ -1,1 +1,1 @@
-from tasks.mask_fill.mask_fill import GraphMasker, GraphMaskPredictionModel
+from tasks.mask_fill.mask_fill import GraphMasker, GraphMaskPredictionModel, GraphMaskTask

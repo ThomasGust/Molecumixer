@@ -1,1 +1,1 @@
-from tasks.descriptors.descriptors import DescriptorCalculator, DescriptorPredictionModel
+from tasks.descriptors.descriptors import DescriptorCalculator, DescriptorPredictionModel, DescriptorPredictionTask

@@ -1,1 +1,1 @@
-from tasks.shuffling.shuffling import NodeShuffler, ShufflingModel
+from tasks.shuffling.shuffling import NodeShuffler, ShufflingModel, ShufflingPredictionTask
