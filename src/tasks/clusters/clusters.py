@@ -34,8 +34,11 @@ class Clusterer:
 class ClusterPredictionModel:
     """Given a latent vector from an encoder, this module will predict pseudolabel clusters"""
 
+    def __init__(self):
+        pass
+
 class ClusterPredictionTask(Task):
     """Implements the cluster prediction training task"""
-
+    
     def __init__(self):
         super().__init__()

@@ -184,6 +184,9 @@ class GVAE(nn.Module):
 class GraphDiscriminator:
     """Given an encoder model, this object will try to predict whether or not a molecular graph is real or generated through GVAE"""
 
+    def __init__(self):
+        pass
+
 class GraphReconstructionTask(Task):
     """Implements the graph reconstruction task"""
 
