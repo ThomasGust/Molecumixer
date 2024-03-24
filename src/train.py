@@ -35,7 +35,42 @@ dataloader = torchload("data\\loaders\\sample_loader.moldata")
 print("LOADED DATALOADER")
 
 class LogCallback:
-    pass
+    """Handles all of the logging during pretraining"""
+
+    def __init__(self, save_path, keys):
+        self.save_path = save_path
+        self.keys = keys
+
+        self.memory = {}
+
+        for key in self.keys:
+            self.memory[key] = []
+    
+    def register(self, epoch_data, encoder=None):
+        """Given the data gathered batchwise over one epoch this model will compute the epochwise average. This model will also save the encoder to a specified save directory"""
+        """I am choosing to simply not deal with the encoder for the moment"""
+
+        for key in self.keys:
+            data = epoch_data[key]
+            avg = sum(data)/len(data)
+            self.memory[key].append(avg)
+    
+    def save_memory(self):
+        pass
+
+class ModelTrainer:
+
+    def __init__(self, encoder, tasks, epochs, batch_size, train_dataloader, test_dataloader, log_callback):
+        self.encoder = encoder
+        self.tasks = tasks
+        self.epochs = epochs
+        self.batch_size = batch_size
+        self.train_dataloader = train_dataloader
+        self.test_dataloader = test_dataloader
+        self.log_callback = log_callback
+
+class Dojo:
+    """Actual environment in which our model will be pretrained"""
 
 model = CGTNN(feature_size=9,
                 embedding_size=BEST_PARAMETERS['model_embedding_size'][0],
