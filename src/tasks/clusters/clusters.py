@@ -41,4 +41,10 @@ class ClusterPredictionTask(Task):
     """Implements the cluster prediction training task"""
     
     def __init__(self):
-        super().__init__()
+        super().__init__("cluster_prediction")
+
+class ClusterContrastiveLearningTask(Task):
+    """Implements a cluster contrastive learning pretraining task"""
+
+    def __init__(self):
+        super().__init__("cluster_contrastive_learning")
