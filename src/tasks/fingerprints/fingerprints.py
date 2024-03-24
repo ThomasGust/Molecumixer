@@ -55,6 +55,7 @@ class FingerprintCalculator:
             o_d[fp_type] = fp
         
         return o_d
+
 class FingerprintPredictionModel:
     """This module will learn to predict molecular fingerprints from a latent vector"""
 
@@ -98,5 +99,24 @@ class FingerprintPredictionModel:
 class FingerprintPredictionTask(Task):
     """Implements the pre-training task for molecular fingerprint prediction"""
 
-    def __init__(self):
+    def __init__(self, encoder_dim, hidden_dim, fingerprint_dims, activation=F.relu, fps=["mfp2", "mfp3", "maccs", "rdkfp", "avfp"]):
         super().__init__()
+
+        self.encoder_dim = encoder_dim
+        self.hidden_dim = hidden_dim
+        self.fingerprint_dims = fingerprint_dims
+        self.activation = activation
+        self.fps = fps
+        
+        self.model = FingerprintPredictionModel(encoder_dim=self.encoder_dim, hidden_dim=self.hidden_dim, fingerprint_dims=self.fingerprint_dims, activation=self.activation)
+        self.fingerprint_calculator = FingerprintCalculator(self.fps)
+    
+    def task_step(self, encoder, batch):
+        fingerprints = self.fingerprint_calculator.calculate_fingerprints(batch.smiles) # TODO I don't think any of the calculators are set up to handle batches
+        
+        latent = encoder(batch) # TODO Once more, I don't think this is the correct way to call the encoder
+        pred = self.model(latent)
+
+        loss = self.model.compute_loss(pred, fingerprints)
+
+        return {"loss":loss, "pred":pred}
