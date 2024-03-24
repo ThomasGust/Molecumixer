@@ -9,9 +9,11 @@ def euclidean_distance():
     pass
 
 class Clusterer:
-    """A KNN model from dense vectors. Early in training, these will be fixed clusters based off a dense molecular fingerprint and chemical descriptors.
+    """
+    A KNN model from dense vectors. Early in training, these will be fixed clusters based off a dense molecular fingerprint and chemical descriptors.
        Later in training, after the model has some understanding of chemical space, we will introduce a second clustering task based off of KNN neighborhoods
-       of our models latent representation."""
+       of our models latent representation.
+       """
     
     def __init__(self, d, ncentroids, niter, verbose=True):
         self.d = d
