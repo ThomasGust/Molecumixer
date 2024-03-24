@@ -42,6 +42,7 @@ class NodeShuffler:
     except we take into account another dimension to handle the different node level attributes.
     """
     def __init__(self, chunks, maximum_hamming_distance):
+        #TODO, right now, this permuted across the entire node matrix, in the future, we probably want to do sample wise shuffling instead of batch wise shuffling
         self.chunks = chunks
         self.maximum_hamming_distance = maximum_hamming_distance
     
@@ -65,7 +66,7 @@ class NodeShuffler:
                 
         return permuted_vector
 
-    def permute_nodes(self, graph):
+    def shuffle_nodes(self, graph):
         """
         Main function for this object, given a graph, it will generate an orientation vector,
         shuffle the original graphs node matrix, and return both our new node matrix, and the shuffle vector used to generate it.
@@ -134,11 +135,29 @@ class ShufflingModel(nn.Module):
 
         cel = nn.CrossEntropyLoss()
         loss = cel(logits, labels)
-
         return loss
 
 class ShufflingPredictionTask(Task):
-    """Implements the shuffling prediction pretraining task"""
+    """Implements the shuffling prediction pretraining task, it contains both the data generate (NodeShuffler in this case) and a model (ShufflingModel)"""
     
-    def __init__(self):
-        super().__init__()
+    def __init__(self, encoder_dim, hidden_dim, chunks, maximum_hamming_distance, activation=F.relu):
+        super().__init__("shuffling")
+
+        self.encoder_dim = encoder_dim
+        self.hidden_dim = hidden_dim
+        self.chunks = chunks
+        self.activation = activation
+        self.maximum_hamming_distance = maximum_hamming_distance
+
+        self.model = ShufflingModel(encoder_dim=self.encoder_dim, hidden_dim=self.hidden_dim, chunks=self.chunks, activation=self.activation)
+        self.node_shuffler = NodeShuffler(self.chunks, self.maximum_hamming_distance)
+
+    def task_step(self, encoder, batch):
+        """Currently, data is computed on the fly, I'm not sure if I should do it this way or pregenerate training data and write it to the dataloaders"""
+        shuffled = self.node_shuffler.shuffle_nodes(batch)
+        latent = encoder(shuffled['x'])
+        pred = self.model(latent)
+
+        loss = self.model.get_loss(shuffled['orientation'], pred)
+
+        return {"pred":pred, "loss":loss}
