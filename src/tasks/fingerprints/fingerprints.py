@@ -120,3 +120,7 @@ class FingerprintPredictionTask(Task):
         loss = self.model.compute_loss(pred, fingerprints)
 
         return {"loss":loss, "pred":pred}
+
+if __name__ == "__main__":
+    task = FingerprintPredictionTask(encoder_dim=512, hidden_dim=1024, fingerprint_dims=["IDK"])
+    print("LOADED TASK")
