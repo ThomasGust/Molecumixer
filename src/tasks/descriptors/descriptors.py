@@ -143,9 +143,11 @@ class DescriptorPredictionTask(Task):
         self.hidden_dim = hidden_dim
         self.output_dims = output_dims
         self.activation = activation
+        
         self.include_g3 = include_g3
 
         self.model = DescriptorPredictionModel(encoder_dim=self.encoder_dim, hidden_dim=self.hidden_dim, output_dims=self.output_dims, activation=self.activation)
+        self.descriptor_calculator = DescriptorCalculator(self.include_g3)
 
     def task_step(self, batch):
         return super().task_step(batch)
