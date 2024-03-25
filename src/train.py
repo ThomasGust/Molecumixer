@@ -118,7 +118,7 @@ class Sensei:
             #TODO, right now, we are just considering, loss, in the future it would be great if we could also track some kind of accuracy
             task_d = task.task_step(latent, batch)
             task_loss = task_d['loss']
-            losses[task.name] = task_loss 
+            losses[task.name] = task_loss
         
 
 
