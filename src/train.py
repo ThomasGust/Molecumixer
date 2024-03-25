@@ -4,7 +4,7 @@ import sys
 sys.path.append('C:\\Users\\Thomas\\OneDrive\\Apps\\Documents\\GitHub\\Molecumixer\\src')
 from utils import (torchload, dump, load, torchdump)
 from utils import SUPPORTED_EDGES, SUPPORTED_ATOMS, MAX_MOLECULE_SIZE
-from config import NODE_SHUFFLE_DECODER_DIMENSION, BEST_PARAMETERS
+from config import *
 from models import CGTNN, LinearProjection, GVAE
 from itertools import chain
 import os
@@ -87,7 +87,8 @@ class LogCallback:
         with open(hist_path, "wb") as f:
             pkl.dump(self.memory, f)
 
-class ModelTrainer:
+class Sensei:
+    """This object is responsible for actually teaching our model, it fits in nicely into the dojo object which stores the training ENVIRONMENT for our model"""
 
     def __init__(self, encoder, tasks, epochs, batch_size, train_dataloader, test_dataloader, log_callback):
         self.encoder = encoder
@@ -99,9 +100,10 @@ class ModelTrainer:
         self.log_callback = log_callback
 
 class Dojo:
-    """Actual environment in which our model will be pretrained"""
+    """This is the training environment in which our model will be pretrained"""
 
     def __init__(self, tasks, log_sp, hyperparam_config_path):
+        #TODO tasks will one day be added to the hyperparameter configuration
 
         self.logger_save_path = log_sp
         self.tasks = tasks
@@ -118,8 +120,25 @@ class Dojo:
             self.log_keys.append(f"{name}_testing_loss")
         
         self.logger = LogCallback(self.logger_save_path, self.log_keys)
+
+        self.hyperparams = load_dojo_config(hyperparam_config_path)
+
+        self.train_loader = torchload(pathjoin(self.hyperparams['dataloader_root'], "train_loader.moldata"))
+        self.test_loader = torchload(pathjoin(self.hyperparams['dataloader_root'], "test_loader.moldata"))
+
+        self.encoder = CGTNN(feature_size=9, embedding_size=self.hyperparams['model_embedding_size'],
+                             attention_heads=self.hyperparams['model_attention_heads'],
+                             n_layers=self.hyperparams['model_layers'],
+                             dropout_ratio=self.hyperparams['model_dropout_rate'],
+                             top_k_ratio=self.hyperparams['model_top_k_ratio'],
+                             top_k_every_n=self.hyperparams('model_top_k_every_n'),
+                             dense_neurons=self.hyperparams['model_dense_neurons'],
+                             edge_dim=9)
         
+        self.sensei = Sensei(self.encoder, self.tasks, self.hyperparam_config_path['epochs'], batch_size=self.hyperparam_config_path['batch_size'], 
+                             train_dataloader=self.train_loader, test_dataloader=self.test_loader, log_callback=self.logger)
         
+
 model = CGTNN(feature_size=9,
                 embedding_size=BEST_PARAMETERS['model_embedding_size'][0],
                 attention_heads=BEST_PARAMETERS['model_attention_heads'][0],

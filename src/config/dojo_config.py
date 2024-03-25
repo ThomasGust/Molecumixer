@@ -3,7 +3,8 @@ import json
 
 class DojoConfig:
 
-    def __init__(self, batch_size,
+    def __init__(self, epochs,
+                       batch_size,
                        learning_rate,
                        weight_decay,
                        sgd_momentum,
@@ -20,6 +21,7 @@ class DojoConfig:
                        optimizer,
                        scheduler,
                        scheduler_patience):
+        self.epochs = epochs
         self.batch_size = batch_size
         self.learning_rate = learning_rate
         self.weight_decay = weight_decay
@@ -40,6 +42,7 @@ class DojoConfig:
     
     def as_dict(self):
         d = {
+            "epochs":self.epochs,
             "batch_size":self.batch_size,
             "learning_rate":self.learning_rate,
             "sgd_momentum":self.sgd_momentum,
@@ -68,6 +71,8 @@ class DojoConfig:
     def from_json(self, sp):
         with open(sp, "rb") as f:
             j = json.load(f)
+
+        self.epochs = j['epochs']
         self.batch_size = j['batch_size']
         self.learning_rate = j['learning_rate']
         self.sgd_momentum = j['sgd_momentum']
@@ -86,6 +91,6 @@ class DojoConfig:
         self.scheduler_patience = j['scheduler_patience']
 
 def load_dojo_config(p):
-    blank_c = DojoConfig(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+    blank_c = DojoConfig(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
     blank_c.from_json(p)
     return blank_c
