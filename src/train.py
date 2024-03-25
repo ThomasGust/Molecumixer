@@ -23,6 +23,7 @@ from torch.utils.data import DataLoader
 from plotter import load_stats
 from orientations import permute_each_nodes, permute_nodes
 from utils import pathjoin
+import pickle as pkl
 
 # THIS WHOLE FILE IS VERY UNORGANIZED AND NEEDS TO GET REDONE AT SOME POINT
 print("FINISHED IMPORTS")
@@ -41,22 +42,50 @@ class LogCallback:
         self.save_path = save_path
         self.keys = keys
 
+        rmif(save_path)
+        makeifnot(save_path)
+
         self.memory = {}
 
         for key in self.keys:
             self.memory[key] = []
+        self.epoch = 0
+        
+        self.encoder = None
     
     def register(self, epoch_data, encoder=None):
         """Given the data gathered batchwise over one epoch this model will compute the epochwise average. This model will also save the encoder to a specified save directory"""
-        """I am choosing to simply not deal with the encoder for the moment"""
 
         for key in self.keys:
             data = epoch_data[key]
             avg = sum(data)/len(data)
             self.memory[key].append(avg)
+        self.epoch += 1
+        self.encoder = encoder
     
     def save_memory(self):
-        pass
+        
+        for key in self.keys:
+            img_path = os.path.join(self.save_path, f"{key}.png")
+
+            plt.plot(self.memory[key], len(list(self.memory)))
+            plt.ylabel(key)
+            plt.xlabel("Epochs")
+            plt.legend()
+            plt.savefig(img_path)
+            plt.close()
+
+        epoch_path = os.path.join(self.save_path, self.epoch)
+
+        makeifnot(epoch_path)
+
+        encoder_path = os.path.join(epoch_path, "encoder.pt")
+        torch.save(self.encoder, encoder_path)
+
+        hist_path = os.path.join(self.save_path, "hist.pkl")
+
+        with open(hist_path, "wb") as f:
+            pkl.dump(self.memory, f)
 
 class ModelTrainer:
 
