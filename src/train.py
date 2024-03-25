@@ -145,6 +145,10 @@ class Sensei:
         
         self.log_callback.register(epoch_data, self.encoder, self.tasks)
         self.log_callback.save_memory()
+    
+    def full_train(self):
+        for e in tqdm(range(self.epochs)):
+            self.train_epoch(e)
 
 class Dojo:
     """This is the training environment in which our model will be pretrained"""
