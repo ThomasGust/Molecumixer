@@ -151,7 +151,7 @@ class Sensei:
             self.train_epoch(e)
 
 class Dojo:
-    """This is the training environment in which our model will be pretrained"""
+    """This is the training environment in which our model will be pretrained. It does not expose any methods other than init. All training will happen through Sensei, this object merely wraps in hyperparameters."""
 
     def __init__(self, tasks, log_sp, hyperparam_config_path):
         #TODO tasks will one day be added to the hyperparameter configuration
