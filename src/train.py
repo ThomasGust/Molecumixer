@@ -2,26 +2,15 @@
 # THE CURRENT ARCHITECTURE FOR TRAINING IS PROBABLY NOT THE BEST AND IT MIGHT BE A GOOD IDEA TO COMPUTE PRETRAINING TARGETS ON THE FLY INSTEAD OF SAVING THEM IN A DATALOADER   
 import sys
 sys.path.append('C:\\Users\\Thomas\\OneDrive\\Apps\\Documents\\GitHub\\Molecumixer\\src')
-from utils import (torchload, dump, load, torchdump)
-from utils import SUPPORTED_EDGES, SUPPORTED_ATOMS, MAX_MOLECULE_SIZE
+from utils import *
 from config import *
-from models import CGTNN, LinearProjection, GVAE
-from itertools import chain
+from models import CGTNN
 import os
-from utils import to_smiles, avg, is_rational, filter_inf, concat_generators, makeifnot, pathjoin, rmif
 
 import matplotlib.pyplot as plt
-import numpy as np
-import torch_geometric
 import torch.nn.functional as F
-import torch.optim as optim
 import torch
-import torch.nn as nn
 from tqdm import tqdm
-from torch.optim.lr_scheduler import ReduceLROnPlateau, StepLR
-from torch.utils.data import DataLoader
-from plotter import load_stats
-from orientations import permute_each_nodes, permute_nodes
 from utils import pathjoin
 import pickle as pkl
 
