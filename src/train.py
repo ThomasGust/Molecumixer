@@ -25,6 +25,8 @@ from orientations import permute_each_nodes, permute_nodes
 from utils import pathjoin
 import pickle as pkl
 
+from tasks import save_task
+
 # THIS WHOLE FILE IS VERY UNORGANIZED AND NEEDS TO GET REDONE AT SOME POINT
 print("FINISHED IMPORTS")
 
@@ -38,8 +40,9 @@ print("LOADED DATALOADER")
 class LogCallback:
     """Handles all of the logging during pretraining"""
 
-    def __init__(self, save_path, keys):
+    def __init__(self, save_path, keys, tasks):
         self.save_path = save_path
+        self.tasks = tasks
         self.keys = keys
 
         rmif(save_path)
@@ -53,15 +56,17 @@ class LogCallback:
         
         self.encoder = None
     
-    def register(self, epoch_data, encoder=None):
+    def register(self, epoch_data, encoder, tasks):
         """Given the data gathered batchwise over one epoch this model will compute the epochwise average. This model will also save the encoder to a specified save directory"""
 
         for key in self.keys:
             data = epoch_data[key]
             avg = sum(data)/len(data)
             self.memory[key].append(avg)
+
         self.epoch += 1
         self.encoder = encoder
+        self.tasks = tasks
     
     def save_memory(self):
         
@@ -75,12 +80,15 @@ class LogCallback:
             plt.savefig(img_path)
             plt.close()
 
-        epoch_path = os.path.join(self.save_path, self.epoch)
+        epoch_path = pathjoin(self.save_path, self.epoch)
 
         makeifnot(epoch_path)
 
-        encoder_path = os.path.join(epoch_path, "encoder.pt")
-        torch.save(self.encoder, encoder_path)
+        encoder_path = pathjoin(epoch_path, "encoder.sd")
+        torch.save(self.encoder.state_dict(), encoder_path)
+
+        for task in self.tasks:
+            save_task(task, epoch_path)
 
         hist_path = os.path.join(self.save_path, "hist.pkl")
 
@@ -110,9 +118,8 @@ class Sensei:
         params = concat_generators([task.model.parameters() for task in self.tasks])
     
         return params
-    def train_batch(self, batch):
-        self.optimizer.zero_grad()
-
+    
+    def step(self, batch):
         latent = self.encoder(batch.x.float().to(device), batch.edge_attr.float().to(device), batch.edge_index.to(device), batch.batch.to(device))
 
         losses = {}
@@ -124,11 +131,38 @@ class Sensei:
 
         t_losses = torch.tensor(list(losses.values())) # TODO I don't think this is recommended so I should probably find a better way to do this
         combined_loss = torch.mean(t_losses) # TODO This is worth reviewing, I'm not sure if taking the mean of the losses is the best way to go about this
+        return combined_loss, losses
+    
+    def train_batch(self, batch):
+        self.optimizer.zero_grad()
+        combined_loss, losses = self.step(batch)
+
         combined_loss.backward()
         self.optimizer.step()
 
         return losses
 
+    def test_batch(self, batch):
+        combined_loss, losses = self.step(batch)
+        return losses
+    
+    def train_epoch(self, e):
+        epoch_data = {}
+
+        for batch in tqdm(self.train_dataloader, desc=f"Training Epoch {e}"):
+            losses = self.train_batch(batch)
+            
+            for key in list(losses.keys()):
+                epoch_data[f"{key}_training_loss"] = losses[key]
+        
+        for batch in tqdm(self.test_dataloader, desc=f"Testing Epoch {e}"):
+            losses = self.test_batch(batch)
+
+            for key in list(losses.keys()):
+                epoch_data[f"{key}_testing_loss"] = losses[key]
+        
+        self.log_callback.register(epoch_data, self.encoder, self.tasks)
+        self.log_callback.save_memory()
 
 class Dojo:
     """This is the training environment in which our model will be pretrained"""

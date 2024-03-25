@@ -1,4 +1,4 @@
-from tasks.common import Task
+from tasks.common import Task, save_task
 
 from tasks.clusters import Clusterer, ClusterPredictionModel, ClusterPredictionTask
 from tasks.descriptors import DescriptorCalculator, DescriptorPredictionModel, DescriptorPredictionTask
