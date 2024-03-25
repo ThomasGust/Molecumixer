@@ -169,9 +169,10 @@ class Dojo:
                              n_layers=self.hyperparams['model_layers'],
                              dropout_ratio=self.hyperparams['model_dropout_rate'],
                              top_k_ratio=self.hyperparams['model_top_k_ratio'],
-                             top_k_every_n=self.hyperparams('model_top_k_every_n'),
+                             top_k_every_n=self.hyperparams['model_top_k_every_n'],
                              dense_neurons=self.hyperparams['model_dense_neurons'],
                              edge_dim=9)
+        print("CREATED ENCODER")
         
         #TODO Task hyperparameters should also be saved to a config in the future
         self.tasks = [

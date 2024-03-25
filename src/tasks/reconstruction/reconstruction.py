@@ -191,4 +191,4 @@ class GraphReconstructionTask(Task):
     """Implements the graph reconstruction task"""
 
     def __init__(self, model_embedding_size):
-        super().__init__()
+        super().__init__("reconstruction")

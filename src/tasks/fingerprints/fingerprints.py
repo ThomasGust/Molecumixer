@@ -100,7 +100,7 @@ class FingerprintPredictionTask(Task):
     """Implements the pre-training task for molecular fingerprint prediction"""
 
     def __init__(self, encoder_dim, hidden_dim, fingerprint_dims, activation=F.relu, fps=["mfp2", "mfp3", "maccs", "rdkfp", "avfp"]):
-        super().__init__()
+        super().__init__("fingerprint_prediction")
 
         self.encoder_dim = encoder_dim
         self.hidden_dim = hidden_dim

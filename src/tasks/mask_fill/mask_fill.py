@@ -16,4 +16,4 @@ class GraphMaskTask(Task):
     """Implements the pretraining task for mask fill in or mask prediction"""
 
     def __init__(self):
-        super().__init__()
+        super().__init__("mask_prediction")

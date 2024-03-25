@@ -137,7 +137,7 @@ class DescriptorPredictionTask(Task):
     "Implements the pre training task of molecular descriptor prediction"
 
     def __init__(self, encoder_dim, hidden_dim, output_dims, activation=F.relu, include_g3=True):
-        super().__init__()
+        super().__init__("descriptor_prediction")
 
         self.encoder_dim = encoder_dim
         self.hidden_dim = hidden_dim
