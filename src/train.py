@@ -90,7 +90,7 @@ class LogCallback:
 class Sensei:
     """This object is responsible for actually teaching our model, it fits in nicely into the dojo object which stores the training ENVIRONMENT for our model"""
 
-    def __init__(self, encoder, tasks, epochs, batch_size, train_dataloader, test_dataloader, log_callback):
+    def __init__(self, encoder, tasks, epochs, batch_size, train_dataloader, test_dataloader, optimizer, scheduler, scheduler_patience, init_lr, log_callback: LogCallback):
         self.encoder = encoder
         self.tasks = tasks
         self.epochs = epochs
@@ -98,6 +98,30 @@ class Sensei:
         self.train_dataloader = train_dataloader
         self.test_dataloader = test_dataloader
         self.log_callback = log_callback
+        self.init_lr = init_lr
+        self.scheduler_patience = scheduler_patience
+
+        total_parameters = concat_generators(self.encoder.parameters(), self.get_task_params())
+        self.optimizer = OPTIM_DICT[optimizer](total_parameters, lr=init_lr)
+
+        self.scheduler = SCHEDULER_DICT[scheduler](self.optimizer, mode='min', patience=self.scheduler_patience)
+    
+    def get_task_params(self):
+        params = concat_generators([task.model.parameters() for task in self.tasks])
+    
+        return params
+    def train_batch(self, batch):
+        latent = self.encoder(batch.x.float().to(device), batch.edge_attr.float().to(device), batch.edge_index.to(device), batch.batch.to(device))
+
+        losses = {}
+        for task in self.tasks:
+            #TODO, right now, we are just considering, loss, in the future it would be great if we could also track some kind of accuracy
+            task_d = task.task_step(latent, batch)
+            task_loss = task_d['loss']
+            losses[task.name] = task_loss 
+        
+
+
 
 class Dojo:
     """This is the training environment in which our model will be pretrained"""
@@ -136,7 +160,9 @@ class Dojo:
                              edge_dim=9)
         
         self.sensei = Sensei(self.encoder, self.tasks, self.hyperparam_config_path['epochs'], batch_size=self.hyperparam_config_path['batch_size'], 
-                             train_dataloader=self.train_loader, test_dataloader=self.test_loader, log_callback=self.logger)
+                             train_dataloader=self.train_loader, test_dataloader=self.test_loader, optimizer=self.hyperparams['optimizer'],
+                             scheduler=self.hyperparams['scheduler'], scheduler_patience=self.hyperparams['scheduler_patience'], init_lr=self.hyperparams['learning_rate'],
+                             log_callback=self.logger)
         
 
 model = CGTNN(feature_size=9,

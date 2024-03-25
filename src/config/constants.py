@@ -311,3 +311,11 @@ BEST_PARAMETERS = {
     "model_top_k_every_n": [1],
     "model_dense_neurons": [256]
 }
+
+OPTIM_DICT = {
+    "adam": torch.optim.Adam
+}
+
+SCHEDULER_DICT = {
+    "plateau":torch.optim.lr_scheduler.ReduceLROnPlateau
+}

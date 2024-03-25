@@ -149,11 +149,10 @@ class DescriptorPredictionTask(Task):
         self.model = DescriptorPredictionModel(encoder_dim=self.encoder_dim, hidden_dim=self.hidden_dim, output_dims=self.output_dims, activation=self.activation)
         self.descriptor_calculator = DescriptorCalculator(self.include_g3)
 
-    def task_step(self, encoder, batch):
+    def task_step(self, latent, batch):
         descriptors = self.descriptor_calculator.calculate_descriptors(batch.smiles)
         descriptors = (descriptors['rd'], descriptors['3d'], descriptors['graph'])
 
-        latent = encoder(batch) #TODO I'm unsure if this is the correct way to infer an output from the encoder model
         pred = self.model(latent)
         
         loss = self.model.compute_loss(pred, descriptors)
