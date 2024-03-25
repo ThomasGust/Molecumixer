@@ -159,19 +159,7 @@ class Dojo:
         self.logger_save_path = log_sp
         self.hyperparam_config_path = hyperparam_config_path
 
-        self.log_names = [t.name for t in self.tasks]
-        self.log_keys = []
-
-        for name in self.log_names:
-            self.log_keys.append(f"{name}_training_accuracy")
-            self.log_keys.append(f"{name}_testing_accuracy")
-
-            self.log_keys.append(f"{name}_training_loss")
-            self.log_keys.append(f"{name}_testing_loss")
-        
-        self.logger = LogCallback(self.logger_save_path, self.log_keys)
-
-        self.hyperparams = load_dojo_config(hyperparam_config_path)
+        self.hyperparams = load_dojo_config(hyperparam_config_path).as_dict()
 
         self.train_loader = torchload(pathjoin(self.hyperparams['dataloader_root'], "train_loader.moldata"))
         self.test_loader = torchload(pathjoin(self.hyperparams['dataloader_root'], "test_loader.moldata"))
@@ -192,11 +180,23 @@ class Dojo:
             FingerprintPredictionTask(self.hyperparams['model_embedding_size'], self.hyperparams['model_embedding_size']*2, [1024, 1024, 1024, 1024, 1024]),
             ShufflingPredictionTask(self.hyperparams['model_embedding_size'], self.hyperparams['model_embedding_size']*2, chunks=30, maximum_hamming_distance=3)
         ]
+
+        self.log_names = [t.name for t in self.tasks]
+        self.log_keys = []
+
+        for name in self.log_names:
+            self.log_keys.append(f"{name}_training_accuracy")
+            self.log_keys.append(f"{name}_testing_accuracy")
+
+            self.log_keys.append(f"{name}_training_loss")
+            self.log_keys.append(f"{name}_testing_loss")
         
+        self.logger = LogCallback(self.logger_save_path, self.log_keys)
+
         self.sensei = Sensei(self.encoder, self.tasks, self.hyperparam_config_path['epochs'], batch_size=self.hyperparam_config_path['batch_size'], 
                              train_dataloader=self.train_loader, test_dataloader=self.test_loader, optimizer=self.hyperparams['optimizer'],
                              scheduler=self.hyperparams['scheduler'], scheduler_patience=self.hyperparams['scheduler_patience'], init_lr=self.hyperparams['learning_rate'],
                              log_callback=self.logger)
         
 if __name__ == "__main__":
-    dojo = Dojo(log_sp="LOG_SAVE", hyperparam_config_path=)
+    dojo = Dojo(log_sp="logs", hyperparam_config_path="config.tc")
