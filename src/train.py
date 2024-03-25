@@ -111,6 +111,8 @@ class Sensei:
     
         return params
     def train_batch(self, batch):
+        self.optimizer.zero_grad()
+
         latent = self.encoder(batch.x.float().to(device), batch.edge_attr.float().to(device), batch.edge_index.to(device), batch.batch.to(device))
 
         losses = {}
@@ -119,8 +121,13 @@ class Sensei:
             task_d = task.task_step(latent, batch)
             task_loss = task_d['loss']
             losses[task.name] = task_loss
-        
 
+        t_losses = torch.tensor(list(losses.values())) # TODO I don't think this is recommended so I should probably find a better way to do this
+        combined_loss = torch.mean(t_losses) # TODO This is worth reviewing, I'm not sure if taking the mean of the losses is the best way to go about this
+        combined_loss.backward()
+        self.optimizer.step()
+
+        return losses
 
 
 class Dojo:
