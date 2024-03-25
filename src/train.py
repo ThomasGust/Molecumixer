@@ -19,13 +19,6 @@ from tasks import save_task
 # THIS WHOLE FILE IS VERY UNORGANIZED AND NEEDS TO GET REDONE AT SOME POINT
 print("FINISHED IMPORTS")
 
-BATCH_SIZE = 32
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-cpu = torch.device("cpu")
-#device = torch.device("cpu")
-dataloader = torchload("data\\loaders\\sample_loader.moldata")
-print("LOADED DATALOADER")
-
 class LogCallback:
     """Handles all of the logging during pretraining"""
 
