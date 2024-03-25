@@ -192,9 +192,10 @@ class Dojo:
             self.log_keys.append(f"{name}_training_loss")
             self.log_keys.append(f"{name}_testing_loss")
         
-        self.logger = LogCallback(self.logger_save_path, self.log_keys)
+        self.logger = LogCallback(self.logger_save_path, keys=self.log_keys, tasks=self.tasks)
+        print("CREATED LOGGER")
 
-        self.sensei = Sensei(self.encoder, self.tasks, self.hyperparam_config_path['epochs'], batch_size=self.hyperparam_config_path['batch_size'], 
+        self.sensei = Sensei(self.encoder, self.tasks, self.hyperparams['epochs'], batch_size=self.hyperparams['batch_size'], 
                              train_dataloader=self.train_loader, test_dataloader=self.test_loader, optimizer=self.hyperparams['optimizer'],
                              scheduler=self.hyperparams['scheduler'], scheduler_patience=self.hyperparams['scheduler_patience'], init_lr=self.hyperparams['learning_rate'],
                              log_callback=self.logger)
