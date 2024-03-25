@@ -64,7 +64,7 @@ class DojoConfig:
 
     def register_json(self, sp):
         d = self.as_dict()
-        with open(sp, "wb") as f:
+        with open(sp, "w") as f:
             json.dump(d, f)
         return d
     
@@ -94,3 +94,24 @@ def load_dojo_config(p):
     blank_c = DojoConfig(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
     blank_c.from_json(p)
     return blank_c
+
+if __name__ == "__main__":
+    config = DojoConfig(epochs=50,
+                        batch_size=32,
+                        learning_rate=1e-3,
+                        weight_decay=1e-5,
+                        sgd_momentum=0.8,
+                        scheduler_gamma=0.8,
+                        pos_weight=1.3,
+                        model_embedding_size=1024,
+                        model_attention_heads=6,
+                        model_layers=8,
+                        model_dropout_rate=0.2,
+                        model_top_k_ratio=0.5,
+                        model_top_k_every_n=1,
+                        model_dense_neurons=256,
+                        dataloader_root="data\\dataloader",
+                        optimizer="adam",
+                        scheduler="plateau",
+                        scheduler_patience=3)
+    config.register_json(sp="config.tc")

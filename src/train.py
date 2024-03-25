@@ -199,4 +199,4 @@ class Dojo:
                              log_callback=self.logger)
         
 if __name__ == "__main__":
-    dojo = Dojo
+    dojo = Dojo(log_sp="LOG_SAVE", hyperparam_config_path=)
