@@ -118,7 +118,8 @@ class Dojo:
             self.log_keys.append(f"{name}_testing_loss")
         
         self.logger = LogCallback(self.logger_save_path, self.log_keys)
-
+        
+        
 model = CGTNN(feature_size=9,
                 embedding_size=BEST_PARAMETERS['model_embedding_size'][0],
                 attention_heads=BEST_PARAMETERS['model_attention_heads'][0],
