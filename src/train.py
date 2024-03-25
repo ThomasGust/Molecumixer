@@ -280,6 +280,7 @@ def train_one_epoch(epoch, model, train_loader, sp=None, stats_sp=None):
 
     epoch_fp_loss = avg(_fp_losses)
 
+
     epoch_loss = avg(_t_losses)
 
     scheduler.step(epoch_loss, epoch=epoch)
