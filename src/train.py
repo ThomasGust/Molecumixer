@@ -96,6 +96,7 @@ class ModelTrainer:
         self.batch_size = batch_size
         self.train_dataloader = train_dataloader
         self.test_dataloader = test_dataloader
+        self.log_callback = log_callback
 
 class Dojo:
     """Actual environment in which our model will be pretrained"""
