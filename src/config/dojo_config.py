@@ -64,3 +64,28 @@ class DojoConfig:
         with open(sp, "wb") as f:
             json.dump(d, f)
         return d
+    
+    def from_json(self, sp):
+        with open(sp, "rb") as f:
+            j = json.load(f)
+        self.batch_size = j['batch_size']
+        self.learning_rate = j['learning_rate']
+        self.sgd_momentum = j['sgd_momentum']
+        self.scheduler_gamma = j['scheduler_gamma']
+        self.pos_weight = j['pos_weight']
+        self.model_embedding_size = j['model_embedding_size']
+        self.model_attention_heads = j['model_attention_heads']
+        self.model_layers = j['model_layers']
+        self.model_dropout_rate = j['model_dropout_rate']
+        self.model_top_k_ratio = j['model_top_k_ratio']
+        self.model_top_k_every_n = j['model_top_k_every_n']
+        self.model_dense_neurons = j['model_dense_neurons']
+        self.dataloader_root = j['dataloader_root']
+        self.optimizer = j['optimizer']
+        self.scheduler = j['scheduler']
+        self.scheduler_patience = j['scheduler_patience']
+
+def load_dojo_config(p):
+    blank_c = DojoConfig(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+    blank_c.from_json(p)
+    return blank_c
