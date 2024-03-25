@@ -96,10 +96,27 @@ class ModelTrainer:
         self.batch_size = batch_size
         self.train_dataloader = train_dataloader
         self.test_dataloader = test_dataloader
-        self.log_callback = log_callback
 
 class Dojo:
     """Actual environment in which our model will be pretrained"""
+
+    def __init__(self, tasks, log_sp, hyperparam_config_path):
+
+        self.logger_save_path = log_sp
+        self.tasks = tasks
+        self.hyperparam_config_path = hyperparam_config_path
+
+        self.log_names = [t.name for t in self.tasks]
+        self.log_keys = []
+
+        for name in self.log_names:
+            self.log_keys.append(f"{name}_training_accuracy")
+            self.log_keys.append(f"{name}_testing_accuracy")
+
+            self.log_keys.append(f"{name}_training_loss")
+            self.log_keys.append(f"{name}_testing_loss")
+        
+        self.logger = LogCallback(self.logger_save_path, self.log_keys)
 
 model = CGTNN(feature_size=9,
                 embedding_size=BEST_PARAMETERS['model_embedding_size'][0],
