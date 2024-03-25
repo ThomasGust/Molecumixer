@@ -190,5 +190,5 @@ class GraphDiscriminator:
 class GraphReconstructionTask(Task):
     """Implements the graph reconstruction task"""
 
-    def __init__(self):
+    def __init__(self, model_embedding_size):
         super().__init__()

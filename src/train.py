@@ -153,11 +153,10 @@ class Sensei:
 class Dojo:
     """This is the training environment in which our model will be pretrained. It does not expose any methods other than init. All training will happen through Sensei, this object merely wraps in hyperparameters."""
 
-    def __init__(self, tasks, log_sp, hyperparam_config_path):
+    def __init__(self, log_sp, hyperparam_config_path):
         #TODO tasks will one day be added to the hyperparameter configuration
 
         self.logger_save_path = log_sp
-        self.tasks = tasks
         self.hyperparam_config_path = hyperparam_config_path
 
         self.log_names = [t.name for t in self.tasks]
@@ -186,7 +185,18 @@ class Dojo:
                              dense_neurons=self.hyperparams['model_dense_neurons'],
                              edge_dim=9)
         
+        #TODO Task hyperparameters should also be saved to a config in the future
+        self.tasks = [
+            #ClusterPredictionTask(),
+            DescriptorPredictionTask(self.hyperparams['model_embedding_size'], self.hyperparams['model_embedding_size']*2, output_dims=[209, 9, 19], include_g3=True),
+            FingerprintPredictionTask(self.hyperparams['model_embedding_size'], self.hyperparams['model_embedding_size']*2, [1024, 1024, 1024, 1024, 1024]),
+            ShufflingPredictionTask(self.hyperparams['model_embedding_size'], self.hyperparams['model_embedding_size']*2, chunks=30, maximum_hamming_distance=3)
+        ]
+        
         self.sensei = Sensei(self.encoder, self.tasks, self.hyperparam_config_path['epochs'], batch_size=self.hyperparam_config_path['batch_size'], 
                              train_dataloader=self.train_loader, test_dataloader=self.test_loader, optimizer=self.hyperparams['optimizer'],
                              scheduler=self.hyperparams['scheduler'], scheduler_patience=self.hyperparams['scheduler_patience'], init_lr=self.hyperparams['learning_rate'],
                              log_callback=self.logger)
+        
+if __name__ == "__main__":
+    dojo = Dojo
