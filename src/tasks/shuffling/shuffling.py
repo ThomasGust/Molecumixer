@@ -104,7 +104,7 @@ class ShufflingModel(nn.Module):
     """Given an encoder, this model predicts how a graph was shuffled/permuted"""
 
     def __init__(self, encoder_dim, hidden_dim, chunks, activation = F.relu):
-        super().__init__()
+        super(ShufflingModel, self).__init__()
 
         self.chunks = chunks
         self.encoder_dim = encoder_dim

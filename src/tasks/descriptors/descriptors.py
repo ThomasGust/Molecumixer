@@ -84,7 +84,7 @@ class DescriptorCalculator:
     
         return descriptors
 
-class DescriptorPredictionModel:
+class DescriptorPredictionModel(nn.Module):
     """This module will predict the molecular descriptors of a given molecule given a latent vector from an encoder"""
 
     def __init__(self, encoder_dim, hidden_dim, output_dims, activation=F.relu):
