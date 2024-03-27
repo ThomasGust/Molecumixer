@@ -36,6 +36,7 @@ class CGTNN(torch.nn.Module):
                                      heads=self.attention_heads, dropout=self.dropout_ratio,
                                      edge_dim=self.edge_dim,
                                      beta=True)
+
         self.transf1 = Linear(self.embedding_size*self.attention_heads, self.embedding_size)
         self.bn1 = BatchNorm1d(embedding_size)
 
@@ -55,6 +56,7 @@ class CGTNN(torch.nn.Module):
 
         self.l1 = Linear(embedding_size*2, embedding_size)
     def forward(self, x, edge_attr, edge_index, batch_index):
+
         x = self.conv1(x, edge_index, edge_attr)
         x = F.relu(self.transf1(x))
         x = self.bn1(x)

@@ -15,6 +15,8 @@ from utils import pathjoin
 import pickle as pkl
 
 from tasks import save_task
+from itertools import chain
+#from config BEST_DEVICE
 
 # THIS WHOLE FILE IS VERY UNORGANIZED AND NEEDS TO GET REDONE AT SOME POINT
 print("FINISHED IMPORTS")
@@ -91,18 +93,27 @@ class Sensei:
         self.init_lr = init_lr
         self.scheduler_patience = scheduler_patience
 
-        total_parameters = concat_generators(self.encoder.parameters(), self.get_task_params())
+        total_parameters = self.get_params()
+        #print(list(total_parameters))
         self.optimizer = OPTIM_DICT[optimizer](total_parameters, lr=init_lr)
 
         self.scheduler = SCHEDULER_DICT[scheduler](self.optimizer, mode='min', patience=self.scheduler_patience)
+
+        self.encoder.to(BEST_DEVICE)
     
-    def get_task_params(self):
-        params = concat_generators([task.model.parameters() for task in self.tasks])
+    def get_params(self):
+        d = [{"params":self.encoder.parameters()}]
+
+        for task in self.tasks:
+            d.append({"params":task.model.parameters()})
     
-        return params
+        return d
     
     def step(self, batch):
-        latent = self.encoder(batch.x.float().to(device), batch.edge_attr.float().to(device), batch.edge_index.to(device), batch.batch.to(device))
+        batch.to(BEST_DEVICE)
+
+        latent = self.encoder(batch.x.float(), batch.edge_attr.float(), batch.edge_index, batch.batch)
+        latent.to(BEST_DEVICE)
 
         losses = {}
         for task in self.tasks:
@@ -171,7 +182,7 @@ class Dojo:
                              top_k_ratio=self.hyperparams['model_top_k_ratio'],
                              top_k_every_n=self.hyperparams['model_top_k_every_n'],
                              dense_neurons=self.hyperparams['model_dense_neurons'],
-                             edge_dim=9)
+                             edge_dim=3)
         print("CREATED ENCODER")
         
         #TODO Task hyperparameters should also be saved to a config in the future
@@ -181,6 +192,9 @@ class Dojo:
             FingerprintPredictionTask(self.hyperparams['model_embedding_size'], self.hyperparams['model_embedding_size']*2, [1024, 1024, 1024, 1024, 1024]),
             ShufflingPredictionTask(self.hyperparams['model_embedding_size'], self.hyperparams['model_embedding_size']*2, chunks=30, maximum_hamming_distance=3)
         ]
+        for task in self.tasks:
+            task.model.to(BEST_DEVICE)
+        #self.tasks = [task.to(BEST_DEVICE) for task in self.tasks]
 
         self.log_names = [t.name for t in self.tasks]
         self.log_keys = []
@@ -202,3 +216,4 @@ class Dojo:
         
 if __name__ == "__main__":
     dojo = Dojo(log_sp="logs", hyperparam_config_path="config.tc")
+    dojo.sensei.full_train()
