@@ -12,6 +12,9 @@ from config import BEST_DEVICE
 
 from rdkit import RDLogger
 
+from tqdm import tqdm
+import pandas as pd
+
 lg = RDLogger.logger()
 
 lg.setLevel(RDLogger.CRITICAL)
@@ -94,6 +97,7 @@ class DescriptorCalculator:
         return descriptors
     
     def batch_calculate_descriptors(self, smiles):
+        #TODO, THIS FUNCTION IS DEPRECATED AND SHOULD NEVER BE USED
         descs = [self.calculate_descriptors(smile) for smile in smiles]
 
         rd = []
@@ -107,6 +111,19 @@ class DescriptorCalculator:
         #print(rd)
         return {"rd":torch.tensor(rd, device=BEST_DEVICE, requires_grad=True), "3d":torch.tensor(threed, device=BEST_DEVICE, requires_grad=True), "graph":torch.tensor(graph, device=BEST_DEVICE, requires_grad=True)}
 
+    def build_descriptor_targets(self, raw_path, save_path):
+        chembl_compounds = pd.read_csv(raw_path, sep=";")
+        smiles = chembl_compounds['Smiles']
+        smiles = list(smiles)[:10_000] #TODO We are only using the first 10,000 for development
+
+
+        descriptors = []
+        for mol in tqdm(smiles):
+            try:
+                descs = self.calculate_descriptors(mol)
+                descriptors.append(descs)
+            except TypeError or RuntimeError:
+                pass
 
 class DescriptorPredictionModel(nn.Module):
     """This module will predict the molecular descriptors of a given molecule given a latent vector from an encoder"""
@@ -187,5 +204,4 @@ if __name__ == "__main__":
     #descriptor_pred_model = DescriptorPredictionModel(512, 1024, [209, 9, 19])
     smiles = "Cn1cnc2c1c(=O)n(C)c(=O)n2C"
     calc = DescriptorCalculator()
-    desc = calc.batch_calculate_descriptors([smiles])
-    print(desc)
+    calc.build_descriptor_targets("data\\raw\\chembl_compounds.csv", "out.csv")
