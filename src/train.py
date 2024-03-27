@@ -122,7 +122,7 @@ class Sensei:
             task_loss = task_d['loss']
             losses[task.name] = task_loss
 
-        t_losses = torch.tensor(list(losses.values())) # TODO I don't think this is recommended so I should probably find a better way to do this
+        t_losses = torch.tensor(list(losses.values()), requires_grad=True) # TODO I don't think this is recommended so I should probably find a better way to do this
         combined_loss = torch.mean(t_losses) # TODO This is worth reviewing, I'm not sure if taking the mean of the losses is the best way to go about this
         return combined_loss, losses
     
@@ -189,8 +189,8 @@ class Dojo:
         self.tasks = [
             #ClusterPredictionTask(),
             DescriptorPredictionTask(self.hyperparams['model_embedding_size'], self.hyperparams['model_embedding_size']*2, output_dims=None, include_g3=True),
-            FingerprintPredictionTask(self.hyperparams['model_embedding_size'], self.hyperparams['model_embedding_size']*2, [1024, 1024, 1024, 1024, 1024]),
-            ShufflingPredictionTask(self.hyperparams['model_embedding_size'], self.hyperparams['model_embedding_size']*2, chunks=30, maximum_hamming_distance=3)
+            #FingerprintPredictionTask(self.hyperparams['model_embedding_size'], self.hyperparams['model_embedding_size']*2, [1024, 1024, 1024, 1024, 1024]),
+            #ShufflingPredictionTask(self.hyperparams['model_embedding_size'], self.hyperparams['model_embedding_size']*2, chunks=30, maximum_hamming_distance=3)
         ]
         for task in self.tasks:
             task.model.to(BEST_DEVICE)

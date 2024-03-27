@@ -1,3 +1,5 @@
+#TODO THIS IS A SUPER HIGH PRIORITY TASK, TRAINING TARGETS NEED TO BE PREBUILT!
+
 from tasks import Task
 
 import torch.nn as nn
@@ -7,6 +9,12 @@ import torch.nn.functional as F
 from rdkit import Chem
 from rdkit.Chem import Descriptors, AllChem, Descriptors3D, GraphDescriptors
 from config import BEST_DEVICE
+
+from rdkit import RDLogger
+
+lg = RDLogger.logger()
+
+lg.setLevel(RDLogger.CRITICAL)
 
 def rmse(inputs, targets):
     return torch.sqrt(F.mse_loss(inputs, targets))
@@ -97,7 +105,7 @@ class DescriptorCalculator:
             threed.append(mol['3d'])
             graph.append(mol['graph'])
         #print(rd)
-        return {"rd":torch.tensor(rd, device=BEST_DEVICE), "3d":torch.tensor(threed, device=BEST_DEVICE), "graph":torch.tensor(graph, device=BEST_DEVICE)}
+        return {"rd":torch.tensor(rd, device=BEST_DEVICE, requires_grad=True), "3d":torch.tensor(threed, device=BEST_DEVICE, requires_grad=True), "graph":torch.tensor(graph, device=BEST_DEVICE, requires_grad=True)}
 
 
 class DescriptorPredictionModel(nn.Module):
