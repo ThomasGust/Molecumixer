@@ -88,7 +88,7 @@ class DescriptorPredictionModel(nn.Module):
     """This module will predict the molecular descriptors of a given molecule given a latent vector from an encoder"""
 
     def __init__(self, encoder_dim, hidden_dim, output_dims, activation=F.relu):
-
+        super(DescriptorPredictionModel, self).__init__()
         self.encoder_dim = encoder_dim
         self.hidden_dim = hidden_dim
         self.output_dims = output_dims

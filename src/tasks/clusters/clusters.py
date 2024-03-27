@@ -1,7 +1,7 @@
 from tasks import Task
 import faiss
 import pickle as pkl
-
+import torch.nn as nn
 def triplet_loss():
     pass
 
@@ -39,11 +39,11 @@ class Clusterer:
         d, i = self.kmeans.index.search(x, c)
         return d, i
 
-class ClusterPredictionModel:
+class ClusterPredictionModel(nn.Module):
     """Given a latent vector from an encoder, this module will predict pseudolabel clusters"""
 
     def __init__(self):
-        pass
+        super(ClusterPredictionModel, self).__init__()
 
 class ClusterPredictionTask(Task):
     """Implements the cluster prediction training task"""

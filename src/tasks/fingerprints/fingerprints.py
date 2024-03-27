@@ -56,10 +56,11 @@ class FingerprintCalculator:
         
         return o_d
 
-class FingerprintPredictionModel:
+class FingerprintPredictionModel(nn.Module):
     """This module will learn to predict molecular fingerprints from a latent vector"""
 
     def __init__(self, encoder_dim, hidden_dim, fingerprint_dims, activation=F.relu):
+        super(FingerprintPredictionModel, self).__init__()
         self.encoder_dim = encoder_dim
         self.hidden_dim = hidden_dim
         self.fingerprint_dims = fingerprint_dims
