@@ -6,6 +6,7 @@ import torch.nn.functional as F
 
 from rdkit import Chem
 from rdkit.Chem import Descriptors, AllChem, Descriptors3D, GraphDescriptors
+from config import BEST_DEVICE
 
 def rmse(inputs, targets):
     return torch.sqrt(F.mse_loss(inputs, targets))
@@ -83,6 +84,21 @@ class DescriptorCalculator:
             descriptors = {"rd": rddescriptors}
     
         return descriptors
+    
+    def batch_calculate_descriptors(self, smiles):
+        descs = [self.calculate_descriptors(smile) for smile in smiles]
+
+        rd = []
+        threed = []
+        graph = []
+        
+        for mol in descs:
+            rd.append(list(mol['rd'].values()))
+            threed.append(mol['3d'])
+            graph.append(mol['graph'])
+        #print(rd)
+        return {"rd":torch.tensor(rd, device=BEST_DEVICE), "3d":torch.tensor(threed, device=BEST_DEVICE), "graph":torch.tensor(graph, device=BEST_DEVICE)}
+
 
 class DescriptorPredictionModel(nn.Module):
     """This module will predict the molecular descriptors of a given molecule given a latent vector from an encoder"""
@@ -91,17 +107,17 @@ class DescriptorPredictionModel(nn.Module):
         super(DescriptorPredictionModel, self).__init__()
         self.encoder_dim = encoder_dim
         self.hidden_dim = hidden_dim
-        self.output_dims = output_dims
+        #self.output_dims = output_dims
 
         
         self.d_l1 = nn.Linear(self.encoder_dim, self.hidden_dim) # Descriptor Linear 1
-        self.d_o = nn.Linear(self.hidden_dim, self.output_dims[0])
+        self.d_o = nn.Linear(self.hidden_dim, 210)
 
         self.d3_l1 = nn.Linear(self.encoder_dim, self.hidden_dim) # Descriptor 3D Linear 1
-        self.d3_o = nn.Linear(self.hidden_dim, self.output_dims[1])
+        self.d3_o = nn.Linear(self.hidden_dim, 9)
 
         self.dg_l1 = nn.Linear(self.encoder_dim, self.hidden_dim) # Graph Descriptors Linear 1
-        self.dg_o = nn.Linear(self.hidden_dim, self.output_dims[2])
+        self.dg_o = nn.Linear(self.hidden_dim, 19)
 
         self.activation = activation
     
@@ -116,7 +132,7 @@ class DescriptorPredictionModel(nn.Module):
 
         dgx = self.dg_l1(x)
         dgx = self.activation(dgx)
-        dgx = self.d3_o(dgx)
+        dgx = self.dg_o(dgx)
 
         return dx, d3x, dgx
 
@@ -127,13 +143,14 @@ class DescriptorPredictionModel(nn.Module):
         dpred, d3pred, dgpred = logits
         d, d3, dg = labels
 
-        dloss =  rmse(dpred, d)/self.output_dims[0]
-        d3loss = rmse(d3pred, d3)/self.output_dims[1]
-        dgloss = rmse(dgpred, dg)/self.output_dims[2]
+        dloss =  rmse(dpred, d)/210
+        d3loss = rmse(d3pred, d3)/9
+        dgloss = rmse(dgpred, dg)/19
 
         return dloss+d3loss+dgloss
 
 class DescriptorPredictionTask(Task):
+#class DescriptorPredictionTask:
     "Implements the pre training task of molecular descriptor prediction"
 
     def __init__(self, encoder_dim, hidden_dim, output_dims, activation=F.relu, include_g3=True):
@@ -150,7 +167,7 @@ class DescriptorPredictionTask(Task):
         self.descriptor_calculator = DescriptorCalculator(self.include_g3)
 
     def task_step(self, latent, batch):
-        descriptors = self.descriptor_calculator.calculate_descriptors(batch.smiles)
+        descriptors = self.descriptor_calculator.batch_calculate_descriptors(batch.smiles)
         descriptors = (descriptors['rd'], descriptors['3d'], descriptors['graph'])
 
         pred = self.model(latent)
@@ -159,4 +176,8 @@ class DescriptorPredictionTask(Task):
         return {"loss":loss, "pred":pred}
     
 if __name__ == "__main__":
-    descriptor_pred_model = DescriptorPredictionModel(512, 1024, [209, 9, 19])
+    #descriptor_pred_model = DescriptorPredictionModel(512, 1024, [209, 9, 19])
+    smiles = "Cn1cnc2c1c(=O)n(C)c(=O)n2C"
+    calc = DescriptorCalculator()
+    desc = calc.batch_calculate_descriptors([smiles])
+    print(desc)

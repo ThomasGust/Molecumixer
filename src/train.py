@@ -188,7 +188,7 @@ class Dojo:
         #TODO Task hyperparameters should also be saved to a config in the future
         self.tasks = [
             #ClusterPredictionTask(),
-            DescriptorPredictionTask(self.hyperparams['model_embedding_size'], self.hyperparams['model_embedding_size']*2, output_dims=[209, 9, 19], include_g3=True),
+            DescriptorPredictionTask(self.hyperparams['model_embedding_size'], self.hyperparams['model_embedding_size']*2, output_dims=None, include_g3=True),
             FingerprintPredictionTask(self.hyperparams['model_embedding_size'], self.hyperparams['model_embedding_size']*2, [1024, 1024, 1024, 1024, 1024]),
             ShufflingPredictionTask(self.hyperparams['model_embedding_size'], self.hyperparams['model_embedding_size']*2, chunks=30, maximum_hamming_distance=3)
         ]
