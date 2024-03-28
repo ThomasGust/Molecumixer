@@ -14,10 +14,10 @@ from rdkit import RDLogger
 
 from tqdm import tqdm
 import pandas as pd
-
+import pickle as pkl
 lg = RDLogger.logger()
 
-lg.setLevel(RDLogger.CRITICAL)
+RDLogger.DisableLog('rdApp.*')
 
 def rmse(inputs, targets):
     return torch.sqrt(F.mse_loss(inputs, targets))
@@ -122,8 +122,11 @@ class DescriptorCalculator:
             try:
                 descs = self.calculate_descriptors(mol)
                 descriptors.append(descs)
-            except TypeError or RuntimeError:
-                pass
+            except Exception as e:
+                continue
+        
+        with open(save_path, "wb") as f:
+            pkl.dump(descriptors, f)
 
 class DescriptorPredictionModel(nn.Module):
     """This module will predict the molecular descriptors of a given molecule given a latent vector from an encoder"""
