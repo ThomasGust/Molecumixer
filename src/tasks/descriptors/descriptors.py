@@ -15,6 +15,7 @@ from rdkit import RDLogger
 from tqdm import tqdm
 import pandas as pd
 import pickle as pkl
+
 lg = RDLogger.logger()
 
 RDLogger.DisableLog('rdApp.*')
@@ -114,16 +115,19 @@ class DescriptorCalculator:
     def build_descriptor_targets(self, raw_path, save_path):
         chembl_compounds = pd.read_csv(raw_path, sep=";")
         smiles = chembl_compounds['Smiles']
+        ids = chembl_compounds['ChEMBL ID']
         smiles = list(smiles)[:10_000] #TODO We are only using the first 10,000 for development
-
+        
 
         descriptors = []
+        cntr = 0
         for mol in tqdm(smiles):
             try:
                 descs = self.calculate_descriptors(mol)
-                descriptors.append(descs)
+                descriptors.append((ids[cntr], descs))
             except Exception as e:
                 continue
+            cntr += 1
         
         with open(save_path, "wb") as f:
             pkl.dump(descriptors, f)

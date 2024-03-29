@@ -10,6 +10,11 @@ from rdkit.Avalon import pyAvalonTools as avalon
 import pandas as pd
 import pickle as pkl
 from tqdm import tqdm
+import time
+
+def tuplelist(df, columns):
+    tuples_list = [(getattr(row, col) for col in columns) for row in df.itertuples()]
+    return tuples_list
 
 class FingerprintCalculator:
     """
@@ -62,15 +67,19 @@ class FingerprintCalculator:
     def calculate_fingerprint_targets(self, raw_path, save_path):
         chembl_compounds = pd.read_csv(raw_path, sep=";")
         smiles = chembl_compounds['Smiles']
+        ids = chembl_compounds['ChEMBL ID']
         smiles = list(smiles)[:10_000] #TODO We are only using the first 10,000 for development
 
+        cntr = 0
         total_fingerprints = []
         for mol in tqdm(smiles, desc="Calculating Fingerprint Targets"):
             try:
                 fingerprints = self.calculate_fingerprints(mol)
-                total_fingerprints.append(fingerprints)
+                total_fingerprints.append((ids[cntr], fingerprints))
             except Exception as e:
+                #Some of the molecules are just malformed for whatever reason, we only want to use the good ones
                 continue
+            cntr += 1
         
         with open(save_path, "wb") as f:
             pkl.dump(total_fingerprints, f)
