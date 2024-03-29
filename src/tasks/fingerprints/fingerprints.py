@@ -7,6 +7,9 @@ import numpy as np
 from rdkit import Chem
 from rdkit.Chem import AllChem, MACCSkeys, RDKFingerprint
 from rdkit.Avalon import pyAvalonTools as avalon
+import pandas as pd
+import pickle as pkl
+from tqdm import tqdm
 
 class FingerprintCalculator:
     """
@@ -55,6 +58,22 @@ class FingerprintCalculator:
             o_d[fp_type] = fp
         
         return o_d
+    
+    def calculate_fingerprint_targets(self, raw_path, save_path):
+        chembl_compounds = pd.read_csv(raw_path, sep=";")
+        smiles = chembl_compounds['Smiles']
+        smiles = list(smiles)[:10_000] #TODO We are only using the first 10,000 for development
+
+        total_fingerprints = []
+        for mol in tqdm(smiles, desc="Calculating Fingerprint Targets"):
+            try:
+                fingerprints = self.calculate_fingerprints(mol)
+                total_fingerprints.append(fingerprints)
+            except Exception as e:
+                continue
+        
+        with open(save_path, "wb") as f:
+            pkl.dump(total_fingerprints, f)
 
 class FingerprintPredictionModel(nn.Module):
     """This module will learn to predict molecular fingerprints from a latent vector"""
