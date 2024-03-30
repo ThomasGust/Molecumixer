@@ -71,11 +71,11 @@ class FingerprintCalculator:
         smiles = list(smiles)[:10_000] #TODO We are only using the first 10,000 for development
 
         cntr = 0
-        total_fingerprints = []
+        total_fingerprints = {}
         for mol in tqdm(smiles, desc="Calculating Fingerprint Targets"):
             try:
                 fingerprints = self.calculate_fingerprints(mol)
-                total_fingerprints.append((ids[cntr], fingerprints))
+                total_fingerprints[ids[cntr]] = fingerprints
             except Exception as e:
                 #Some of the molecules are just malformed for whatever reason, we only want to use the good ones
                 continue

@@ -218,5 +218,7 @@ class Dojo:
 if __name__ == "__main__":
     #dojo = Dojo(log_sp="logs", hyperparam_config_path="config.tc")
     #dojo.sensei.full_train()
-    calc = FingerprintCalculator()
-    calc.calculate_fingerprint_targets("data\\raw\\chembl_compounds.csv", "out_fp.pkl")
+    #calc = FingerprintCalculator()
+    #calc.calculate_fingerprint_targets("data\\raw\\chembl_compounds.csv", "out_fp.pkl")
+    calc = DescriptorCalculator()
+    calc.build_descriptor_targets("data\\raw\\chembl_compounds.csv", "out_desc.pkl")

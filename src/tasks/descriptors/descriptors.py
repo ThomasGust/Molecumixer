@@ -119,12 +119,12 @@ class DescriptorCalculator:
         smiles = list(smiles)[:10_000] #TODO We are only using the first 10,000 for development
         
 
-        descriptors = []
+        descriptors = {}
         cntr = 0
         for mol in tqdm(smiles):
             try:
                 descs = self.calculate_descriptors(mol)
-                descriptors.append((ids[cntr], descs))
+                descriptors[ids[cntr]] = descs
             except Exception as e:
                 continue
             cntr += 1
