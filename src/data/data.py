@@ -45,6 +45,6 @@ class DataManager:
     def create_dataloader(self):
         with open(pathjoin(self.build_directory, "merge.pkl"), "rb") as f:
             merged = pkl.load(f)
-        print(merged)
+        print(merged[:5])
 if __name__ == "__main__":
     manager = DataManager("data\\build", "data\\dataloader")
