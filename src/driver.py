@@ -3,3 +3,5 @@
 from data.data import DataManager
 
 dm = DataManager("data\\build", "data\\dataloader")
+dm.merge()
+dm.create_dataloader()

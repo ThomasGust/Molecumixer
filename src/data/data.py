@@ -20,7 +20,7 @@ class DataManager:
         
         self.build_resources = {}
         for i, name in enumerate(self.names):
-            data = pkl.load(self.build_paths[i])
+            data = pkl.load(open(self.build_paths[i], "rb"))
             self.build_resources[name] = data
         
     def merge(self):
@@ -40,7 +40,11 @@ class DataManager:
                 df[id][ri] = data
         
         with open(pathjoin(self.build_directory, "merge.pkl"), "wb") as f:
-            pkl.dump(df, )
+            pkl.dump(df, f)
 
+    def create_dataloader(self):
+        with open(pathjoin(self.build_directory, "merge.pkl"), "rb") as f:
+            merged = pkl.load(f)
+        print(merged)
 if __name__ == "__main__":
     manager = DataManager("data\\build", "data\\dataloader")
