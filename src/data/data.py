@@ -2,12 +2,29 @@ from utils import pathjoin
 import os
 import pickle as pkl
 
+
+class MolecumixerDataset:
+
+    def __init__(self, build_directory):
+        self.build_directory = build_directory
+        
+        self.dm = DataManager(self.build_directory)
+        self.dm.merge()
+
+        self.df = pkl.load(open(pathjoin(self.build_directory, "merge.pkl"), "rb"))
+    
+    def __len__(self):
+        return len(list(self.df.keys()))
+    
+    def __getitem__(self, idx):
+        resource = self.df[list(self.df.keys())[idx]]
+        return resource
+
 class DataManager:
     """This object will handle merging the task specific training files and processing them into dataloaders"""
 
-    def __init__(self, build_directory, dataloader_directory):
+    def __init__(self, build_directory):
         self.build_directory = build_directory
-        self.dataloader_directory = dataloader_directory
 
         ls = os.listdir(self.build_directory)
         try:
@@ -19,6 +36,7 @@ class DataManager:
         self.build_paths = [pathjoin(self.build_directory, d) for d in ls]
         
         self.build_resources = {}
+        print(self.names)
         for i, name in enumerate(self.names):
             data = pkl.load(open(self.build_paths[i], "rb"))
             self.build_resources[name] = data
@@ -45,6 +63,8 @@ class DataManager:
     def create_dataloader(self):
         with open(pathjoin(self.build_directory, "merge.pkl"), "rb") as f:
             merged = pkl.load(f)
-        print(merged[:5])
+        
+        print(list(merged.keys()))
+
 if __name__ == "__main__":
     manager = DataManager("data\\build", "data\\dataloader")

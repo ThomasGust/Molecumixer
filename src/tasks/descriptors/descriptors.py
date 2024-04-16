@@ -33,7 +33,9 @@ class DescriptorCalculator:
         self.include_g3 = include_g3
 
     def calculate_rdmol_descriptors(self, mol):
-        return Descriptors.CalcMolDescriptors(mol)
+        #TODO I should be trying to cut down on akward type conversion like this throughout the code but it should work for now.
+        d = dict(Descriptors.CalcMolDescriptors(mol))
+        return list(d.values())
     
     def calculate_graph_descriptors(self, mol):
         balabanJ = GraphDescriptors.BalabanJ(mol)

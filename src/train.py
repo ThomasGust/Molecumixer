@@ -222,3 +222,4 @@ if __name__ == "__main__":
     #calc.calculate_fingerprint_targets("data\\raw\\chembl_compounds.csv", "out_fp.pkl")
     calc = DescriptorCalculator()
     calc.build_descriptor_targets("data\\raw\\chembl_compounds.csv", "out_desc.pkl")
+    #print("DONE")
