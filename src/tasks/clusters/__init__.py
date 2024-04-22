@@ -1,1 +1,1 @@
-from tasks.clusters.clusters import Clusterer, ClusterPredictionModel, ClusterPredictionTask
+from tasks.clusters.clusters import ClusterCalculator, ClusterPredictionModel#, ClusterPredictionTask

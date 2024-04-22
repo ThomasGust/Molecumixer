@@ -1,14 +1,16 @@
-from tasks import Task
+#from tasks import Task
 import faiss
 import pickle as pkl
 import torch.nn as nn
+import numpy as np
+
 def triplet_loss():
     pass
 
 def euclidean_distance():
     pass
 
-class Clusterer:
+class ClusterCalculator:
     """
     A KNN model from dense vectors. Early in training, these will be fixed clusters based off a dense molecular fingerprint and chemical descriptors.
        Later in training, after the model has some understanding of chemical space, we will introduce a second clustering task based off of KNN neighborhoods
@@ -38,21 +40,18 @@ class Clusterer:
     def search(self, x, c=1):
         d, i = self.kmeans.index.search(x, c)
         return d, i
-
+    
+    def calculate(self, data):
+        descriptors = data['descriptors']
+        passs
 class ClusterPredictionModel(nn.Module):
     """Given a latent vector from an encoder, this module will predict pseudolabel clusters"""
 
     def __init__(self):
         super(ClusterPredictionModel, self).__init__()
 
-class ClusterPredictionTask(Task):
-    """Implements the cluster prediction training task"""
-    
-    def __init__(self):
-        super().__init__("cluster_prediction")
-
-class ClusterContrastiveLearningTask(Task):
-    """Implements a cluster contrastive learning pretraining task"""
-
-    def __init__(self):
-        super().__init__("cluster_contrastive_learning")
+if __name__ == "__main__":
+    data = np.random.randn(1_000_000, 500)*np.random.randn(1_000_000, 500)
+    print(data.shape)
+    calculator = ClusterCalculator(500, 100, 20)
+    calculator.train(data)

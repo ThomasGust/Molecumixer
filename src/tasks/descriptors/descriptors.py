@@ -150,7 +150,10 @@ class DescriptorCalculator:
         for mol in tqdm(smiles, desc="Calculating Molecular Descriptors"):
             try:
                 mol_descriptors = self.calculate_descriptors(mol)
-                descriptors.append(torch.tensor(np.array(mol_descriptors)))
+                darr = np.array(mol_descriptors)
+                darr = np.nan_to_num(darr)
+
+                descriptors.append(torch.tensor(darr))
                 retids.append(id[cntr])
             except Exception as e:
                 #print(e)
