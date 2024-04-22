@@ -5,6 +5,7 @@ from tasks import Task
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
+import numpy as np
 
 from rdkit import Chem
 from rdkit.Chem import Descriptors, AllChem, Descriptors3D, GraphDescriptors
@@ -20,6 +21,9 @@ lg = RDLogger.logger()
 
 RDLogger.DisableLog('rdApp.*')
 
+
+def as_values(descriptors):
+    return list(dict(descriptors).values())
 def rmse(inputs, targets):
     return torch.sqrt(F.mse_loss(inputs, targets))
 
@@ -90,14 +94,12 @@ class DescriptorCalculator:
 
         rddescriptors = self.calculate_rdmol_descriptors(mol)
         if self.include_g3:
-            descriptors_3d = self.calculate_3d_descriptors(mol)
-            graph_descriptors = self.calculate_graph_descriptors(mol)
-
-            descriptors = {"rd": rddescriptors, "3d":descriptors_3d, "graph":graph_descriptors}
-        else:
-            descriptors = {"rd": rddescriptors}
-    
-        return descriptors
+            try:
+                descriptors_3d = self.calculate_3d_descriptors(mol)
+                graph_descriptors = self.calculate_graph_descriptors(mol)
+                return rddescriptors + descriptors_3d + graph_descriptors
+            except Exception as e:
+                raise RuntimeError("THIS IS AN ERROR IN CALCULATE DESCRIPTORS FUNCTION OF DESCRIPTOR CALCULATOR")
     
     def batch_calculate_descriptors(self, smiles):
         #TODO, THIS FUNCTION IS DEPRECATED AND SHOULD NEVER BE USED
@@ -108,7 +110,7 @@ class DescriptorCalculator:
         graph = []
         
         for mol in descs:
-            rd.append(list(mol['rd'].values()))
+            rd.append(mol['rd']) #list(mol['rd'].values())
             threed.append(mol['3d'])
             graph.append(mol['graph'])
         #print(rd)
@@ -133,6 +135,30 @@ class DescriptorCalculator:
         
         with open(save_path, "wb") as f:
             pkl.dump(descriptors, f)
+    
+    def calculate(self, raw_data):
+        smiles = raw_data['Smiles']
+        smiles = list(smiles)
+
+        id = raw_data['ChEMBL ID']
+        id = list(id)
+
+        descriptors = []
+        retids = []
+        cntr = 0
+
+        for mol in tqdm(smiles, desc="Calculating Molecular Descriptors"):
+            try:
+                mol_descriptors = self.calculate_descriptors(mol)
+                descriptors.append(torch.tensor(np.array(mol_descriptors)))
+                retids.append(id[cntr])
+            except Exception as e:
+                #print(e)
+                pass
+            #print(mol_descriptors)
+            cntr += 1
+        
+        return {"descriptors":descriptors, "id":retids}
 
 class DescriptorPredictionModel(nn.Module):
     """This module will predict the molecular descriptors of a given molecule given a latent vector from an encoder"""
@@ -201,7 +227,7 @@ class DescriptorPredictionTask(Task):
         self.descriptor_calculator = DescriptorCalculator(self.include_g3)
 
     def task_step(self, latent, batch):
-        descriptors = self.descriptor_calculator.batch_calculate_descriptors(batch.smiles)
+        descriptors = batch['out_desc']
         descriptors = (descriptors['rd'], descriptors['3d'], descriptors['graph'])
 
         pred = self.model(latent)

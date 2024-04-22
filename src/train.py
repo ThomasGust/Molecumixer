@@ -17,6 +17,8 @@ import pickle as pkl
 
 from tasks import save_task
 from itertools import chain
+from data.data import DataManager, MolecumixerDataset
+from torch.utils.data import DataLoader
 #from config BEST_DEVICE
 
 # THIS WHOLE FILE IS VERY UNORGANIZED AND NEEDS TO GET REDONE AT SOME POINT
@@ -111,9 +113,8 @@ class Sensei:
         return d
     
     def step(self, batch):
-        batch.to(BEST_DEVICE)
 
-        latent = self.encoder(batch.x.float(), batch.edge_attr.float(), batch.edge_index, batch.batch)
+        latent = self.encoder(batch.x.float().to(BEST_DEVICE), batch.edge_attr.float().to(BEST_DEVICE), batch.edge_index.to(BEST_DEVICE), batch.batch.to(BEST_DEVICE))
         latent.to(BEST_DEVICE)
 
         losses = {}
@@ -173,9 +174,16 @@ class Dojo:
 
         self.hyperparams = load_dojo_config(hyperparam_config_path).as_dict()
 
-        self.train_loader = torchload(pathjoin(self.hyperparams['dataloader_root'], "train_loader.moldata"))
-        self.test_loader = torchload(pathjoin(self.hyperparams['dataloader_root'], "test_loader.moldata"))
+        dm = DataManager("data\\build")
+        dm.merge()
+        dm.create_dataloader()
+        dataset = MolecumixerDataset("data\\build")
+        print("INITIALIZED DATASET")
+        self.train_loader = DataLoader(dataset, batch_size=32)
 
+        #self.train_loader = torchload(pathjoin(self.hyperparams['dataloader_root'], "train_loader.moldata"))
+        #self.test_loader = torchload(pathjoin(self.hyperparams['dataloader_root'], "test_loader.moldata"))
+        self.test_loader = self.train_loader
         self.encoder = CGTNN(feature_size=9, embedding_size=self.hyperparams['model_embedding_size'],
                              attention_heads=self.hyperparams['model_attention_heads'],
                              n_layers=self.hyperparams['model_layers'],
@@ -216,10 +224,10 @@ class Dojo:
                              log_callback=self.logger)
         
 if __name__ == "__main__":
-    #dojo = Dojo(log_sp="logs", hyperparam_config_path="config.tc")
-    #dojo.sensei.full_train()
-    #calc = FingerprintCalculator()
+    dojo = Dojo(log_sp="logs", hyperparam_config_path="config.tc")
+    dojo.sensei.full_train()
+    #alc = FingerprintCalculator()
     #calc.calculate_fingerprint_targets("data\\raw\\chembl_compounds.csv", "out_fp.pkl")
-    calc = DescriptorCalculator()
-    calc.build_descriptor_targets("data\\raw\\chembl_compounds.csv", "out_desc.pkl")
+    #calc = DescriptorCalculator()
+    #scalc.build_descriptor_targets("data\\raw\\chembl_compounds.csv", "out_desc.pkl")
     #print("DONE")
