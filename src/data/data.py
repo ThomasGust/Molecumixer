@@ -2,7 +2,7 @@ from utils import pathjoin
 import os
 import pickle as pkl
 from utils import from_smiles
-from tasks import DescriptorCalculator
+from tasks import DescriptorCalculator, FingerprintCalculator
 from tqdm import tqdm
 import pandas as pd
 from rdkit.Chem import MolFromSmiles

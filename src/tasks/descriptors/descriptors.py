@@ -95,9 +95,9 @@ class DescriptorCalculator:
         rddescriptors = self.calculate_rdmol_descriptors(mol)
         if self.include_g3:
             try:
-                descriptors_3d = self.calculate_3d_descriptors(mol)
+                #descriptors_3d = self.calculate_3d_descriptors(mol)
                 graph_descriptors = self.calculate_graph_descriptors(mol)
-                return rddescriptors + descriptors_3d + graph_descriptors
+                return rddescriptors +graph_descriptors#+ descriptors_3d + graph_descriptors
             except Exception as e:
                 raise RuntimeError("THIS IS AN ERROR IN CALCULATE DESCRIPTORS FUNCTION OF DESCRIPTOR CALCULATOR")
     

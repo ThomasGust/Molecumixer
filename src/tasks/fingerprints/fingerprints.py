@@ -10,6 +10,7 @@ from rdkit.Avalon import pyAvalonTools as avalon
 import pandas as pd
 import pickle as pkl
 from tqdm import tqdm
+import torch
 import time
 
 def tuplelist(df, columns):
@@ -83,6 +84,43 @@ class FingerprintCalculator:
         
         with open(save_path, "wb") as f:
             pkl.dump(total_fingerprints, f)
+        
+    def calculate(self, raw_data):
+        smiles = raw_data['Smiles']
+        smiles = list(smiles)
+
+        id = raw_data['ChEMBL ID']
+        id = list(id)
+
+        mfp2s = []
+        maccss = []
+        rdkfps = []
+
+        retids = []
+        cntr = 0
+        for s in tqdm(smiles, desc="Calculating Molecular Fingerprints"):
+            try:
+                mol = Chem.MolFromSmiles(s)
+                mol = Chem.AddHs(mol)
+
+                mfp2 = self.calculate_mfp(mol, 2)
+                maccs = self.calculate_maccs(mol)
+                rdkfp = self.calculate_rdkfp(mol)
+
+                mfp2 = torch.tensor(mfp2)
+                maccs = torch.tensor(maccs)
+                rdkfp = torch.tensor(rdkfp)
+
+                mfp2s.append(mfp2)
+                maccss.append(maccs)
+                rdkfps.append(rdkfp)
+
+                retids.append(id[cntr])
+            except Exception as e:
+                pass
+            cntr+= 1
+    
+        return {"mfp2":mfp2s, "maccs":maccss, "rdkfp":rdkfps, "id":retids}
 
 class FingerprintPredictionModel(nn.Module):
     """This module will learn to predict molecular fingerprints from a latent vector"""
