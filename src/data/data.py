@@ -2,7 +2,7 @@ from utils import pathjoin
 import os
 import pickle as pkl
 from utils import from_smiles
-from tasks import DescriptorCalculator, FingerprintCalculator
+from tasks import DescriptorCalculator, FingerprintCalculator, ClusterCalculator
 from tqdm import tqdm
 import pandas as pd
 from rdkit.Chem import MolFromSmiles
@@ -57,10 +57,18 @@ class DatasetBuilder:
     def build(self, sp=None):
         dfs = []
         for calculator in self.calculators:
-            ret_d = calculator.calculate(self.raw_data)
-            df = pd.DataFrame(ret_d)
-            dfs.append(df)
+            if type(calculator) == type(ClusterCalculator(120, 120, 120)):
+                d = reduce(lambda df1, df2: pd.merge(df1, df2, on='id'), dfs)
+                ret_d = calculator.calculate(d)
+                ret_d = pd.DataFrame(ret_d)
+                dfs.append(ret_d)
+            else:
+                ret_d = calculator.calculate(self.raw_data)
+                df = pd.DataFrame(ret_d)
+                dfs.append(df)
         
+        #for df in dfs:
+        #    print(df.head(1))
         dataset = reduce(lambda df1, df2: pd.merge(df1, df2, on='id'), dfs)
         dataset.to_csv(sp)
         
